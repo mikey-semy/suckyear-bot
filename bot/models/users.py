@@ -20,6 +20,8 @@ from bot.models.base import SQLModel
 from bot.models.types import TYPE_CHECKING
 if TYPE_CHECKING:
     from .fails import FailModel
+    from .votes import VoteModel
+    
     
 class UserModel(SQLModel):
     """
@@ -37,3 +39,4 @@ class UserModel(SQLModel):
     chat_id: Mapped[int] = mapped_column("chat_id", BigInteger, unique=True)
     username: Mapped[str] = mapped_column("username", String(100))
     fails: Mapped[List["FailModel"]] = relationship(back_populates="user")
+    votes: Mapped[List["VoteModel"]] = relationship(back_populates="user")

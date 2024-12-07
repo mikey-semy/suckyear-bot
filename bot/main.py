@@ -19,11 +19,12 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 from fluent.runtime import FluentLocalization, FluentResourceLoader
-from bot.commandsworker import set_bot_commands
+from .commandsworker import set_bot_commands
 from .handlers import setup_routers
 from .middlewares.l10n import L10nMiddleware
 from .middlewares.user import UserMiddleware
 from .middlewares.db import DatabaseMiddleware
+from .utils.plural import ru_plural
 from .config import settings
 
 async def main():
@@ -53,7 +54,8 @@ async def main():
     l10n = FluentLocalization(
             ["ru"], 
             ["strings.ftl", "errors.ftl"],
-            l10n_loader
+            l10n_loader,
+            functions={'PLURAL': ru_plural}
         )
     
     # Инициализация бота с токеном и настройками по умолчанию
