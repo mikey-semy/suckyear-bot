@@ -14,6 +14,7 @@
 для выполнения операций с базой данных, связанных с инструкциями по эксплуатации.
 """
 from datetime import datetime
+from enum import Enum
 from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer, ForeignKey
@@ -22,6 +23,19 @@ from bot.models.types import TYPE_CHECKING
 if TYPE_CHECKING:
     from .users import UserModel
     from .votes import VoteModel
+
+class FailStatus(str, Enum):
+    """
+    Статус фейла.
+    
+    Attributes:
+        DRAFT (str): Черновик фейла.
+        CHECKING (str): Фейл на проверке.
+        PUBLISHED (str): Опубликованный фейл.
+    """
+    DRAFT = "draft"
+    CHECKING = "checking"
+    PUBLISHED = "published"
 
 class FailModel(SQLModel):
     """
@@ -35,7 +49,7 @@ class FailModel(SQLModel):
         name (str): Название фейла.
         description (str): Подробное описание фейла.
         rating (int): Рейтинг фейла, основанный на голосах пользователей.
-        is_draft (bool): Флаг, указывающий, является ли фейл черновиком.
+        status (FailStatus): Статус фейла.
     """
     __tablename__ = "fails"
 
@@ -46,6 +60,7 @@ class FailModel(SQLModel):
     name: Mapped[str] = mapped_column("name", String(100))
     description: Mapped[str] = mapped_column("description", String(1000))
     rating: Mapped[int] = mapped_column("rating", Integer, default=0)
-    is_draft: Mapped[bool] = mapped_column("is_draft", default=True)
+    status: Mapped[FailStatus] = mapped_column(default=FailStatus.DRAFT)
+    
     user: Mapped["UserModel"] = relationship(back_populates="fails")
-    votes: Mapped[List["VoteModel"]] = relationship(back_populates="fail")
+    votes: Mapped[List["VoteModel"]] = relationship(back_populates="fail", cascade="all, delete")

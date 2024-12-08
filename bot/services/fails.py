@@ -7,12 +7,12 @@
 
 Класс `FailService` включает в себя метод для создания новой записи о неудаче.
 """
-from typing import List
+from typing import List, Tuple
 from logging import info
 from sqlalchemy import select, func, text
 from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import SQLAlchemyError
-from bot.models import FailModel, UserModel, VoteModel
+from bot.models import FailModel, FailStatus, UserModel, VoteModel
 from .base import BaseService
 
 
@@ -27,11 +27,11 @@ class FailService(BaseService):
         session (AsyncSession): Асинхронная сессия для работы с базой данных.
     """
     async def create_fail(
-        self, 
-        user_id: int, 
-        name: str, 
+        self,
+        user_id: int,
+        name: str,
         description: str,
-        is_draft: bool = True
+        status: FailStatus = FailStatus.DRAFT
     ) -> FailModel:
         """Создает новую запись о неудаче.
 
@@ -60,7 +60,7 @@ class FailService(BaseService):
             name=name,
             description=description,
             rating=0,
-            is_draft=is_draft
+            status=status
         )
         
         self.session.add(fail)
@@ -70,7 +70,7 @@ class FailService(BaseService):
         info(f"Фейл ID={fail.id} создан пользователем {fail.user_id}: {name}")
         return fail
 
-    async def get_top_losers(self, limit: int = 10) -> List[UserModel]:
+    async def get_top_losers(self, limit: int = 10) -> List[Tuple[UserModel, int]]:
         """Получает список пользователей с наибольшим количеством неудач.
 
         Этот метод возвращает список пользователей, отсортированных по
@@ -81,27 +81,51 @@ class FailService(BaseService):
 
         Returns:
             List[UserModel]: Список пользователей с наибольшим количеством неудач.
+        
+        Usage:
+            users_with_ratings = await user_service.get_top_losers(10)
+            for user, rating in users_with_ratings:
+                print(f"User: {user.username}, Rating: {rating}")
+        
         """
         query = (
             select(
                 UserModel,
                 func.coalesce(func.sum(FailModel.rating), 0).label('total_rating')
             )
-            .join(UserModel.fails)
-            .where(FailModel.is_draft == False) # Только опубликованные
-            .group_by(UserModel.id, UserModel.username)
+            .outerjoin(UserModel.fails)
+            .where(
+                (FailModel.status == FailStatus.PUBLISHED) | 
+                (FailModel.id.is_(None))
+            ) 
+            .group_by(UserModel.id)
             .order_by(text('total_rating DESC'))
             .limit(limit)
         )
         
         result = await self.session.execute(query)
-        return result.unique().all()
+        return result.all()
     
+    async def to_draft(self, fail_id: int) -> bool:
+        """
+        Переводит фейл в статус черновика.
+
+        Attributes:
+            fail_id (int): Идентификатор фейла.
+
+        Returns:
+            bool: True если успешно переведен в черновик
+        """
+        fail = await self.get_fail_by_id(fail_id)
+        if fail:
+            fail.status = FailStatus.DRAFT
+            await self.session.commit()
+            info(f"Фейл ID={fail_id} переведен в черновик")
+            return True
+        return False
+
     async def get_fails_for_voting(self, limit: int = 5) -> List[FailModel]:
         """Получает случайные записи о неудачах для голосования.
-
-        Этот метод возвращает случайные записи о неудачах, которые могут
-        быть использованы для голосования, с учетом заданного лимита.
 
         Attributes:
             limit (int): Максимальное количество неудач для возврата.
@@ -111,19 +135,16 @@ class FailService(BaseService):
         """
         query = (
             select(FailModel)
-            .where(FailModel.is_draft == False) # Только опубликованные
+            .where(FailModel.status == FailStatus.PUBLISHED) # Только опубликованные
             .options(joinedload(FailModel.user))
             .order_by(func.random()) 
             .limit(limit)
         )
         result = await self.session.execute(query)
-        return result.unique().scalars().all()
+        return result.scalars().unique().all()
 
     async def get_fail_by_id(self, fail_id: int) -> FailModel | None:
         """Получает запись о неудаче по идентификатору.
-
-        Этот метод возвращает запись о неудаче, соответствующую
-        указанному идентификатору.
 
         Attributes:
             fail_id (int): Идентификатор неудачи.
@@ -155,7 +176,7 @@ class FailService(BaseService):
             select(FailModel)
             .where(
                 FailModel.user_id == user_id, 
-                FailModel.is_draft == False
+                FailModel.status == FailStatus.PUBLISHED
             )
             .order_by(FailModel.created_at.desc())
         )
@@ -264,12 +285,15 @@ class FailService(BaseService):
             select(FailModel)
             .where(
                 FailModel.user_id == user_id, 
-                FailModel.is_draft == True
+                FailModel.status == FailStatus.DRAFT
             )
             .order_by(FailModel.created_at.desc())
         )
+        info(f"Draft query: {query}")
         result = await self.session.execute(query)
-        return result.scalars().all()
+        drafts = result.scalars().all()
+        info(f"Draft results: {drafts}")
+        return drafts
     
     async def publish_draft(self, fail_id: int, user_id: int) -> bool:
         """
@@ -283,8 +307,28 @@ class FailService(BaseService):
             bool: True, если фейл успешно опубликован, False в противном случае.
         """
         fail = await self.get_fail_by_id(fail_id)
-        if fail and fail.user_id == user_id and fail.is_draft:
-            fail.is_draft = False
+        if fail and fail.user_id == user_id and fail.status == FailStatus.DRAFT:
+            fail.status = FailStatus.PUBLISHED
+            await self.session.commit()
+            return True
+        return False
+    
+    async def update_draft(self, draft_id: int, name: str, description: str) -> bool:
+        """
+        Обновляет имя и описание черновика.
+    
+        Attributes:
+            draft_id (int): ID черновика
+            name (str): Новое имя
+            description (str): Новое описание
+    
+        Returns:
+            bool: True если успешно обновлено
+        """
+        fail = await self.get_fail_by_id(draft_id)
+        if fail and fail.status == FailStatus.DRAFT:
+            fail.name = name
+            fail.description = description
             await self.session.commit()
             return True
         return False

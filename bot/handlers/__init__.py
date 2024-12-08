@@ -3,7 +3,7 @@ from . import base, fails
 
 __all__ = ["base", "fails"]
 
-def setup_routers() -> Router:
+def all_handlers() -> Router:
     router = Router()
     
     for module in __all__:
