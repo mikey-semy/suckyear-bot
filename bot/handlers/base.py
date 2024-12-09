@@ -10,30 +10,25 @@
 - command_help: Обрабатывает команду /help и отправляет пользователю справочную информацию.
 """
 from aiogram import Router
-from aiogram.filters import Command
 from aiogram.types import Message
 from fluent.runtime import FluentLocalization
+from bot.services.menu import MenuManager
 
 router = Router()
+menu_manager = MenuManager()
 
-
-@router.message(Command("start"))
-async def command_start(message: Message, l10n: FluentLocalization):
+@router.message(commands=["start"])
+async def cmd_start(message: Message, l10n: FluentLocalization):
     """
-    Приветственное сообщение от бота пользователю
+    Обработчик команды /start. 
+    Отправляет приветственное сообщение пользователю.
+    Выводит клавиатуру меню.
 
-    :param message: сообщение от пользователя с командой /start
-    :param l10n: объект локализации
+    Attributes:
+        message (Message): Сообщение пользователя.
+        l10n (FluentLocalization): Локализация.
+
     """
-    await message.answer(l10n.format_value("intro"))
-
-
-@router.message(Command("help"))
-async def command_help(message: Message, l10n: FluentLocalization):
-    """
-    Справка для пользователя
-
-    :param message: сообщение от пользователя с командой /help
-    :param l10n: объект локализации
-    """
-    await message.answer(l10n.format_value("help"))
+    keyboard = menu_manager.get_keyboard("main_menu", l10n)
+    text = menu_manager.get_menu_text("main_menu", l10n)
+    await message.answer(text, reply_markup=keyboard.as_markup())

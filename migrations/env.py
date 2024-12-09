@@ -7,7 +7,7 @@ from alembic import context
 from bot.models.base import SQLModel
 from bot.models.users import UserModel
 from bot.models.fails import FailModel
-from bot.config import settings
+from bot.settings import settings
 
 config = context.config
 

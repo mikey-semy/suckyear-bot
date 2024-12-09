@@ -21,7 +21,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fluent.runtime import FluentLocalization, FluentResourceLoader
 from aiogram.exceptions import TelegramAPIError
-from .core.bot import bot, dp
+from .core.instance import bot, dp
 from .commandsworker import set_bot_commands
 from .handlers import all_handlers
 from .routers import all_routers
@@ -30,7 +30,7 @@ from .middlewares.user import UserMiddleware
 from .middlewares.db import DatabaseMiddleware
 from .middlewares.docs_blocker import BlockDocsMiddleware
 from .utils.plural import ru_plural
-from .config import settings, Environment
+from .settings import settings, Environment
 
 
 @asynccontextmanager

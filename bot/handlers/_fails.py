@@ -8,6 +8,7 @@
 Функции:
 - create_fail: Обрабатывает команду "/fail" и создает новую запись о неудаче.
 """
+import logging
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command, StateFilter
@@ -18,11 +19,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fluent.runtime import FluentLocalization
 from bot.services.users import UserService
 from bot.services.fails import FailService
-from bot.services.menu import MenuManager
+from bot.services._menu import MenuManager
 from bot.models import FailStatus, UserModel, FailModel
-from logging import info
+
 
 router = Router()
+menu_manager = MenuManager()
 
 class FailStates(StatesGroup):
     """Состояния для обработки создания записи о неудаче."""
@@ -32,8 +34,7 @@ class FailStates(StatesGroup):
     editing_name = State()
     editing_description = State()
 
-    menu_manager = MenuManager()
-
+    
 # Базовые утилиты
 async def check_user(user_id: int, message: Message | CallbackQuery, session: AsyncSession, l10n: FluentLocalization) -> UserModel | None:
     user_service = UserService(session)
@@ -69,8 +70,8 @@ async def start_fail_creation(
         l10n (FluentLocalization): Объект локализации.
     """
     # Получаем клавиатуру из конфигурации
-    keyboard = menu_manager.get_keyboard('fail_creation')
-    state_config = menu_manager.get_state_config('fail_creation.states.name')
+    keyboard = menu_manager.get_keyboard("fail_creation")
+    state_config = menu_manager.get_state_config("fail_creation.states.name")
     
     # Отправляем сообщение с inline клавиатурой
     sent_message = await message.answer(
@@ -103,25 +104,25 @@ async def process_fail_name(
         l10n (FluentLocalization): Объект локализации.
     """
     # Получаем конфигурацию для текущего состояния
-    name_config = menu_manager.get_state_config('fail_creation.states.name')
-    desc_config = menu_manager.get_state_config('fail_creation.states.description')
+    name_config = menu_manager.get_state_config("fail_creation.states.name")
+    desc_config = menu_manager.get_state_config("fail_creation.states.description")
     
     # Проверяем длину названия согласно конфигурации
-    if len(message.text) > name_config['validation']['max_length']:
+    if len(message.text) > name_config["validation"]["max_length"]:
         await message.answer(
-            l10n.format_value(name_config['validation']['error']),
+            l10n.format_value(name_config["validation"]["error"]),
             show_alert=True
         )
         return
     
     # Получаем сохраненные данные и клавиатуру для следующего шага
     data = await state.get_data()
-    keyboard = menu_manager.get_keyboard('fail_creation')
+    keyboard = menu_manager.get_keyboard("fail_creation")
     
     try:
         # Обновляем существующее сообщение
         await message.bot.edit_message_text(
-            l10n.format_value(desc_config['message']),
+            l10n.format_value(desc_config["message"]),
             chat_id=data["chat_id"],
             message_id=data["message_id"],
             reply_markup=keyboard.as_markup()
@@ -163,8 +164,8 @@ async def process_description(
     """
 
     # Получаем конфигурацию
-    desc_config = menu_manager.get_state_config('fail_creation.states.description')
-    action_config = menu_manager.get_state_config('fail_creation.states.action')
+    desc_config = menu_manager.get_state_config("fail_creation.states.description")
+    action_config = menu_manager.get_state_config("fail_creation.states.action")
 
     # Проверяем сохраненные данные
     data = await state.get_data()
@@ -177,9 +178,9 @@ async def process_description(
         return
     
     # Валидация длины описания
-    if len(message.text) > desc_config['validation']['max_length']:
+    if len(message.text) > desc_config["validation"]["max_length"]:
         await message.answer(
-            l10n.format_value(desc_config['validation']['error']),
+            l10n.format_value(desc_config["validation"]["error"]),
             show_alert=True
         )
         return
@@ -189,11 +190,11 @@ async def process_description(
         await state.update_data(description=message.text)
         
         # Получаем клавиатуру для действий
-        keyboard = menu_manager.get_keyboard('fail_creation.states.action')
+        keyboard = menu_manager.get_keyboard("fail_creation.states.action")
         
         # Обновляем сообщение с кнопками действий
         await message.bot.edit_message_text(
-            l10n.format_value(action_config['message']),
+            l10n.format_value(action_config["message"]),
             chat_id=data["chat_id"],
             message_id=data["message_id"],
             reply_markup=keyboard.as_markup()
@@ -230,7 +231,7 @@ async def publish_fail(
         l10n (FluentLocalization): Объект локализации.
     """
 
-    config = menu_manager.get_state_config('fail_creation.callbacks.publish')
+    config = menu_manager.get_state_config("fail_creation.callbacks.publish")
 
     try:
         user = await check_user(callback.from_user.id, callback, session, l10n)
@@ -276,7 +277,7 @@ async def save_draft(
         l10n (FluentLocalization): Объект локализации.
     """
     
-    config = menu_manager.get_state_config('fail_creation.callbacks.draft')
+    config = menu_manager.get_state_config("fail_creation.callbacks.draft")
     
     try:
         user = await check_user(callback.from_user.id, callback, session, l10n)
@@ -321,7 +322,7 @@ async def show_drafts(
         session (AsyncSession): Асинхронная сессия для работы с базой данных.
         l10n (FluentLocalization): Объект локализации.
     """
-
+    config = menu_manager.get_state_config("drafts")
     try:
         # Проверяем пользователя
         user = await check_user(message.from_user.id, message, session, l10n)
@@ -342,7 +343,7 @@ async def show_drafts(
 
         # Создаем клавиатуру из черновиков
         keyboard = menu_manager.build_dynamic_keyboard(
-            'drafts',
+            "drafts",
             drafts
         )
 
@@ -377,13 +378,13 @@ async def manage_draft(
     
     try:
         # Получаем конфигурацию
-        config = menu_manager.get_state_config('draft_management')
+        config = menu_manager.get_state_config("draft_management")
         
         # Извлекаем ID черновика
         draft_id = int(callback.data.split(":")[1])
         
         keyboard = menu_manager.get_id_keyboard(
-            'draft_management',
+            "draft_management",
             draft_id
         )
         
@@ -411,7 +412,7 @@ async def publish_draft(callback: CallbackQuery, session: AsyncSession, l10n: Fl
     """
     try:
         # Получаем конфигурацию
-        config = menu_manager.get_state_config('draft_publishing.messages')
+        config = menu_manager.get_state_config("draft_publishing.messages")
         
         # Извлекаем ID черновика
         draft_id = int(callback.data.split(":")[1])
@@ -450,8 +451,8 @@ async def publish_draft(callback: CallbackQuery, session: AsyncSession, l10n: Fl
 @router.callback_query(F.data.startswith("edit_draft:"))
 async def start_edit_draft(callback: CallbackQuery, state: FSMContext, l10n: FluentLocalization):
     try:
-        config = menu_manager.get_state_config('draft_editing.states.name')
-        keyboard = menu_manager.get_keyboard('draft_editing')
+        config = menu_manager.get_state_config("draft_editing.states.name")
+        keyboard = menu_manager.get_keyboard("draft_editing")
         
         draft_id = int(callback.data.split(":")[1])
         await state.update_data(draft_id=draft_id)
@@ -471,8 +472,8 @@ async def start_edit_draft(callback: CallbackQuery, state: FSMContext, l10n: Flu
 
 @router.message(FailStates.editing_name)
 async def edit_draft_name(message: Message, state: FSMContext, l10n: FluentLocalization):
-    config = menu_manager.get_state_config('draft_editing.states.name')
-    desc_config = menu_manager.get_state_config('draft_editing.states.description')
+    config = menu_manager.get_state_config("draft_editing.states.name")
+    desc_config = menu_manager.get_state_config("draft_editing.states.description")
     
     if len(message.text) > config["validation"]["max_length"]:
         await message.answer(
@@ -490,7 +491,7 @@ async def edit_draft_name(message: Message, state: FSMContext, l10n: FluentLocal
 @router.message(FailStates.editing_description)
 async def edit_draft_description(message: Message, state: FSMContext, session: AsyncSession, l10n: FluentLocalization):
     try:
-        config = menu_manager.get_state_config('draft_editing')
+        config = menu_manager.get_state_config("draft_editing")
         
         if len(message.text) > config["states"]["description"]["validation"]["max_length"]:
             await message.answer(
@@ -544,11 +545,11 @@ async def confirm_delete_fail(
     """
     try:
         fail_id = int(callback.data.split(":")[1])
-        config = menu_manager.get_state_config('fail_deletion.confirm')
+        config = menu_manager.get_state_config("fail_deletion.confirm")
         
         # Создаем клавиатуру с привязкой к ID
         keyboard = menu_manager.get_id_keyboard(
-            'fail_deletion.confirm',
+            "fail_deletion.confirm",
             fail_id
         )
         
@@ -582,7 +583,7 @@ async def delete_fail(
     """
     try:
         fail_id = int(callback.data.split(":")[1])
-        config = menu_manager.get_state_config('fail_deletion.messages')
+        config = menu_manager.get_state_config("fail_deletion.messages")
         
         user = await check_user(callback.from_user.id, callback, session, l10n)
         if not user:
@@ -626,7 +627,7 @@ async def back_to_drafts(
     """
 
     try:
-        config = menu_manager.get_state_config('drafts.messages')
+        config = menu_manager.get_state_config("drafts.messages")
         
         # Проверяем пользователя
         user = await check_user(callback.from_user.id, callback, session, l10n)
@@ -648,7 +649,7 @@ async def back_to_drafts(
             
         # Создаем клавиатуру из черновиков
         keyboard = menu_manager.build_dynamic_keyboard(
-            'drafts',
+            "drafts",
             drafts
         )
         
@@ -680,7 +681,7 @@ async def show_top_losers(
         l10n (FluentLocalization): Объект локализации.
     """
     try:
-        config = menu_manager.get_state_config('top_losers')
+        config = menu_manager.get_state_config("top_losers")
         
         # Получаем топ пользователей
         fail_service = FailService(session)
@@ -733,7 +734,7 @@ async def show_fails_for_voting(
         l10n (FluentLocalization): Объект локализации.
     """
     try:
-        config = menu_manager.get_state_config('voting')
+        config = menu_manager.get_state_config("voting")
         
         # Получаем фейлы
         fail_service = FailService(session)
@@ -748,7 +749,7 @@ async def show_fails_for_voting(
             
         # Создаем клавиатуру
         keyboard = menu_manager.build_dynamic_keyboard(
-            'voting',
+            "voting",
             fails
         )
         
@@ -782,7 +783,7 @@ async def read_fail(
         l10n (FluentLocalization): Объект локализации.
     """
     try:
-        config = menu_manager.get_state_config('fail_reading')
+        config = menu_manager.get_state_config("fail_reading")
         fail_id = int(callback.data.split(":")[1])
         
         # Проверяем существование фейла
@@ -795,7 +796,7 @@ async def read_fail(
         for button in config["keyboard"]["buttons"]:
             builder.button(
                 text=l10n.format_value(button["text"]),
-                callback_data=f"vote:{fail.id}:{button['rating']}"
+                callback_data=f"vote:{fail.id}:{button["rating"]}"
             )
             
         # Отображаем информацию
@@ -837,7 +838,7 @@ async def vote_fail(
         l10n (FluentLocalization): Объект локализации.
     """
     try:
-        config = menu_manager.get_state_config('voting.messages')
+        config = menu_manager.get_state_config("voting.messages")
         _, fail_id, rating = callback.data.split(":")
         
         user = await check_user(callback.from_user.id, callback, session, l10n)
@@ -880,7 +881,7 @@ async def show_user_fails(
         l10n (FluentLocalization): Объект локализации.
     """
     try:
-        config = menu_manager.get_state_config('user_fails')
+        config = menu_manager.get_state_config("user_fails")
         
         # Проверяем пользователя
         user = await check_user(message.from_user.id, message, session, l10n)
@@ -900,7 +901,7 @@ async def show_user_fails(
             
         # Создаем клавиатуру
         keyboard = menu_manager.build_dynamic_keyboard(
-            'user_fails',
+            "user_fails",
             fails
         )
         
@@ -920,10 +921,10 @@ async def show_user_fails(
 async def manage_public_fail(callback: CallbackQuery, session: AsyncSession, l10n: FluentLocalization):
     try:
         fail_id = int(callback.data.split(":")[1])
-        config = menu_manager.get_state_config('public_fail.management')
+        config = menu_manager.get_state_config("public_fail.management")
         
         keyboard = menu_manager.get_id_keyboard(
-            'public_fail.management',
+            "public_fail.management",
             fail_id
         )
         
@@ -955,7 +956,7 @@ async def to_draft(
     """
     try:
         fail_id = int(callback.data.split(":")[1])
-        config = menu_manager.get_state_config('public_fail.messages')
+        config = menu_manager.get_state_config("public_fail.messages")
         
         fail_service = FailService(session)
         await fail_service.to_draft(fail_id)
@@ -995,7 +996,7 @@ async def cancel_fail(
 ):
     """Отмена создания фейла"""
     try:
-        config = menu_manager.get_state_config('cancellation.fail_creation')
+        config = menu_manager.get_state_config("cancellation.fail_creation")
         await state.clear()
         await callback.message.delete()
         await callback.answer(
@@ -1012,7 +1013,7 @@ async def cancel_delete(
 ):
     """Отмена удаления фейла"""
     try:
-        config = menu_manager.get_state_config('cancellation.fail_deletion')
+        config = menu_manager.get_state_config("cancellation.fail_deletion")
         await callback.message.delete()
         await callback.answer(
             l10n.format_value(config["message"]),

@@ -1,0 +1,187 @@
+{
+    "fail_creation": {
+        "keyboard": {
+            "inline": true,
+            "buttons": [
+                {"text": "btn-cancel", "callback": "cancel_fail"}
+            ]
+        },
+        "states": {
+            "name": {
+                "message": "type-name-fail",
+                "validation": {
+                    "max_length": 100,
+                    "error": "fail-name-too-long"
+                }
+            },
+            "description": {
+                "message": "type-description-fail", 
+                "validation": {
+                    "max_length": 1000,
+                    "error": "fail-description-too-long"
+                }
+            },
+            "action": {
+                "message": "choose-fail-action",
+                "keyboard": {
+                    "buttons": [
+                        {"text": "btn-publish-now", "callback": "publish_fail"},
+                        {"text": "btn-save-draft", "callback": "save_draft"},
+                        {"text": "btn-cancel", "callback": "cancel_fail"}
+                    ]
+                }
+            }
+        },
+        "callbacks": {
+            "publish": {
+                "status": "CHECKING",
+                "message": "fail-checking"
+            },
+            "draft": {
+                "status": "DRAFT",
+                "message": "fail-saved-as-draft",
+                "popup": true
+            }
+        }
+    },
+    "drafts": {
+        "messages": {
+            "empty": "no-drafts",
+            "list": "your-drafts"
+        },
+        "keyboard": {
+            "type": "dynamic",
+            "callback_prefix": "manage_draft",
+            "adjust": 1
+        }
+    },
+    "draft_management": {
+        "message": "manage-draft",
+        "keyboard": {
+            "buttons": [
+                {"text": "btn-publish-now", "callback": "publish_draft"},
+                {"text": "btn-edit-draft", "callback": "edit_draft"},
+                {"text": "btn-delete-draft", "callback": "delete_fail"},
+                {"text": "btn-back-to-drafts", "callback": "back_to_drafts"}
+            ]
+        }
+    },
+    "draft_publishing": {
+        "messages": {
+            "success": "draft-published",
+            "error": "publish-error"
+        }
+    },
+    "draft_editing": {
+    "states": {
+      "name": {
+        "message": "type-name-fail",
+        "validation": {
+          "max_length": 100,
+          "error": "fail-name-too-long"
+        }
+      },
+      "description": {
+        "message": "type-discription-fail",
+        "validation": {
+          "max_length": 1000,
+          "error": "fail-description-too-long"
+        }
+      }
+    },
+    "messages": {
+      "success": "draft-updated",
+      "error": "draft-update-error"
+    },
+    "keyboard": {
+      "buttons": [
+        {"text": "btn-cancel", "callback": "cancel_edit"}
+      ]
+    }
+  },
+  "fail_deletion": {
+    "confirm": {
+      "message": "confirm-delete-message",
+      "keyboard": {
+        "buttons": [
+          {"text": "btn-confirm-delete", "callback": "confirm_delete"},
+          {"text": "btn-cancel-delete", "callback": "cancel_delete"}
+        ]
+      }
+    },
+    "messages": {
+      "success": "fail-deleted-popup",
+      "error": "fail-delete-error"
+    }
+  },
+  "top_losers": {
+    "limit": 10,
+    "messages": {
+      "empty": "top-losers-no-fails",
+      "caption": "top-losers-caption",
+      "item": "top-loser-caption"
+    }
+  },
+  "voting": {
+    "limit": 10,
+    "messages": {
+      "empty": "no-fails-for-voting",
+      "choose": "choose-fail-to-vote",
+      "success": "vote-success",
+      "already": "already-voted"
+    },
+    "keyboard": {
+      "type": "dynamic",
+      "callback_prefix": "read_fail",
+      "adjust": 1
+    }
+  },
+  "fail_reading": {
+    "messages": {
+      "info": "vote-info"
+    },
+    "keyboard": {
+      "buttons": [
+        {"text": "vote-down", "rating": -1},
+        {"text": "vote-up", "rating": 1}
+      ]
+    }
+  },
+  "user_fails": {
+    "messages": {
+      "empty": "i-am-not-a-loser",
+      "choose": "choose-fail-to-delete"
+    },
+    "keyboard": {
+      "type": "dynamic",
+      "callback_prefix": "manage_public",
+      "adjust": 1
+    }
+  },
+  "public_fail": {
+    "management": {
+      "message": "manage-public-fail",
+      "keyboard": {
+        "buttons": [
+          {"text": "btn-to-draft", "callback": "to_draft"},
+          {"text": "btn-delete-fail", "callback": "delete_fail"}
+        ]
+      }
+    },
+    "messages": {
+      "to_draft": "fail-to-draft"
+    }
+  },
+  "cancellation": {
+    "fail_creation": {
+      "message": "fail-creation-cancelled",
+      "show_alert": true
+    },
+    "fail_deletion": {
+      "message": "deletion-cancelled", 
+      "show_alert": true
+    }
+  }
+    
+}
+  

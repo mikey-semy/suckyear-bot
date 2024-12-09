@@ -14,7 +14,7 @@ from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from bot.config import settings
+from bot.settings import settings
 
 # Создание асинхронного движка базы данных
 engine = create_async_engine(
