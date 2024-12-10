@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "SuckYearBot"
+name = "suckyear-bot"
 version = "0.1.0"
-description = "Лох года"
+description = ""
 authors = ["MikhailTo <toshkin.mikhail@yandex.ru>"]
 license = "MIT"
 readme = "README.md"
