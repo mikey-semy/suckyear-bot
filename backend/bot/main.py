@@ -1,14 +1,19 @@
 import logging
+import asyncio
 from pathlib import Path
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from backend.settings import settings
-from backend.locales.localization import setup_localization
+from fastapi import FastAPI
+
 from backend.bot.core.instance import dp, bot
+from backend.settings import settings, Environment
 from backend.bot.middlewares import L10nMiddleware, UserMiddleware, DatabaseMiddleware
+from backend.bot.handlers import all_handlers
+from .locales.localization import setup_localization
+from .commandsworker import set_bot_commands
+
 
 @asynccontextmanager
-async def lifespan(application: FastAPI):
+async def lifespan(_app: FastAPI):
     try:
         # Настройка логирования
         logging.basicConfig(

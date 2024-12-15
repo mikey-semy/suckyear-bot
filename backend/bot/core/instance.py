@@ -2,7 +2,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
-from backend.bot.settings import settings
+from backend.settings import settings
 
 # Инициализация бота с токеном и настройками по умолчанию
 bot = Bot(

@@ -11,13 +11,14 @@
 """
 from aiogram import Router
 from aiogram.types import Message
+from aiogram.filters import Command
 from fluent.runtime import FluentLocalization
 from backend.bot.keyboards.menu import MenuManager
 
 router = Router()
 menu_manager = MenuManager()
 
-@router.message(commands=["start"])
+@router.message(Command("start"))
 async def cmd_start(message: Message, l10n: FluentLocalization):
     """
     Обработчик команды /start. 

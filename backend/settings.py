@@ -46,10 +46,8 @@ class Settings(BaseSettings):
     webhook_host: HttpUrl = Field(default="http://localhost")
     webhook_port: int = Field(default=8000)
     
-    bot_token: SecretStr = Field(
-        default=SecretStr(
-            getenv('BOT_TOKEN_DEV' if environment == Environment.DEVELOPMENT else 'BOT_TOKEN')
-        )
+    bot_token: SecretStr = SecretStr(
+        getenv('BOT_TOKEN_DEV' if environment == Environment.DEVELOPMENT else 'BOT_TOKEN')
     )
     
     # База данных

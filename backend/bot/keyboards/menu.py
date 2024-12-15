@@ -4,7 +4,7 @@ from aiogram.types import WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 class MenuManager:
-    def __init__(self, menu_path: str = 'bot/config/menu.json'):
+    def __init__(self, menu_path: str = 'backend/bot/keyboards/menu.json'):
         with open(
             file=menu_path,
             mode='r',

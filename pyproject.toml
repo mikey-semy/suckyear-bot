@@ -5,7 +5,10 @@ description = ""
 authors = ["MikhailTo <toshkin.mikhail@yandex.ru>"]
 license = "MIT"
 readme = "README.md"
-package-mode = false
+packages = [{include = "backend"}]
+
+[tool.poetry.scripts]
+api = "backend.api.main:run"
 
 [tool.poetry.dependencies]
 python = "^3.12"

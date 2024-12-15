@@ -3,7 +3,7 @@ import json
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 class MenuManager:
-    def __init__(self, config_path: str = 'bot/config/menu.json'):
+    def __init__(self, config_path: str = 'backend/bot/keyboards/menu.json'):
         with open(config_path) as f:
             self.config = json.load(f)
     

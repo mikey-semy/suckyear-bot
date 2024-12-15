@@ -10,7 +10,7 @@
     - Запуск приложения (dev или prod)
 
 Attributes:
-    application (FastAPI): Основной экземпляр FastAPI приложения
+    app (FastAPI): Основной экземпляр FastAPI приложения
 """
 import logging
 from socket import gaierror
@@ -22,7 +22,7 @@ from backend.bot.main import lifespan
 from backend.settings import settings
 
 # Инициализация приложения FastAPI
-application = FastAPI(
+app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
     description=settings.app_description,
@@ -30,13 +30,13 @@ application = FastAPI(
 )
 
 # Включение маршрутизаторов для обработки команд и сообщений
-application.include_router(all_routers())
+app.include_router(all_routers())
 
 # Настройка промежуточных слоев для блокировки доступа к документации
-application.add_middleware(BlockDocsMiddleware)
+app.add_middleware(BlockDocsMiddleware)
 
 # Настройка промежуточного слоя для CORS
-application.add_middleware(
+app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allow_origins,
     allow_credentials=settings.allow_credentials,
@@ -44,11 +44,14 @@ application.add_middleware(
     allow_headers=settings.allow_headers
 )
 
-if __name__ == "__main__":
+def run():
+    """
+    Запуск приложения FastAPI.
+    """
     import uvicorn
     try:
         uvicorn.run(
-            application,
+            app,
             host="0.0.0.0",
             port=settings.webhook_port
         )
@@ -58,3 +61,6 @@ if __name__ == "__main__":
         logging.critical("Ошибка операционной системы: %s", e)
     except KeyboardInterrupt:
         logging.info("Получен сигнал остановки")
+        
+if __name__ == "__main__":
+    run()
