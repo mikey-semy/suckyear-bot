@@ -53,6 +53,8 @@ class Settings(BaseSettings):
     # База данных
     dsn: PostgresDsn | str =  Field(default="sqlite+aiosqlite:///./test.db")
     
+    alembic_path: str = Field(default="backend/alembic.ini")
+    
     # Документация
     docs_access: bool = Field(default=True)
 

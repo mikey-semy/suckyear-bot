@@ -37,17 +37,24 @@ BOT_TOKEN=ваш_токен_бота
 DSN=ваш_ссылка_на_базу_данных_postgres (postgresql+asyncpg://username:password@localhost:5432/database_name)_или_sqlite (sqlite+aiosqlite:///./test.db) - sqlite подключен по умолчанию, для тестов на локальном компьютере.
 ```
 
-### 5. Инициализация базы данных
+### 5. Работа с базой данных
 
 Для инициализации базы данных выполните следующие команды:
 
+Создание миграции:
 ```bash
-alembic init migrations
-alembic revision --autogenerate -m "Initial"
-alembic upgrade head
+poetry run makemigrations "add user table"
+```
+Применение миграций:
+```bash
+poetry run migrate
+```
+Откат последней миграции:
+```bash
+poetry run rollback
 ```
 
-### 6. Запуск бота
+### 6. Запуск бэкенда
 
 Запустите бота с помощью следующей команды:
 

@@ -14,6 +14,7 @@ Attributes:
 """
 import logging
 from socket import gaierror
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api.middlewares.docs_blocker import BlockDocsMiddleware
@@ -48,7 +49,6 @@ def run():
     """
     Запуск приложения FastAPI.
     """
-    import uvicorn
     try:
         uvicorn.run(
             app,
@@ -61,6 +61,6 @@ def run():
         logging.critical("Ошибка операционной системы: %s", e)
     except KeyboardInterrupt:
         logging.info("Получен сигнал остановки")
-        
+
 if __name__ == "__main__":
     run()

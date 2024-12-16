@@ -9,6 +9,10 @@ packages = [{include = "backend"}]
 
 [tool.poetry.scripts]
 api = "backend.api.main:run"
+dbinit = "backend.shared.database.commands:init"
+makemigrations = "backend.shared.database.commands:makemigrations"
+migrate = "backend.shared.database.commands:migrate"
+rollback = "backend.shared.database.commands:rollback"
 
 [tool.poetry.dependencies]
 python = "^3.12"

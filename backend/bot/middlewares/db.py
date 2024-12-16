@@ -35,7 +35,7 @@ class DatabaseMiddleware(BaseMiddleware):
         handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
         data: Dict[str, Any]
-    ) -> AsyncSession:
+    ) -> Any:
         """
         Обработка события Telegram с добавлением сессии базы данных.
 
