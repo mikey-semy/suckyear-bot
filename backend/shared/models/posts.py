@@ -2,7 +2,7 @@
 Модуль, содержащий модели данных для работы с инструкциями по эксплуатации.
 
 Этот модуль определяет следующие модели SQLAlchemy:
-- FailModel: представляет инструкцию по эксплуатации
+- PostModel: представляет инструкцию по эксплуатации
 
 Модель наследуется от базового класса SQLModel и определяет 
 соответствующие поля и отношения между таблицами базы данных.
@@ -19,48 +19,57 @@ from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer, ForeignKey
 from backend.shared.models.base import SQLModel
+from backend.shared.models.tags import TagModel
 from backend.shared.models.types import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from .users import UserModel
     from .votes import VoteModel
 
-class FailStatus(str, Enum):
+class PostStatus(str, Enum):
     """
-    Статус фейла.
-    
+    Статус поста.
+   
     Attributes:
-        DRAFT (str): Черновик фейла.
-        CHECKING (str): Фейл на проверке.
-        PUBLISHED (str): Опубликованный фейл.
+        DRAFT (str): Черновик поста.
+        CHECKING (str): Пост на проверке.
+        PUBLISHED (str): Опубликованный пост.
+        DELETED (str): Удаленный пост.
     """
     DRAFT = "draft"
-    CHECKING = "checking"
+    CHECKING = "checking" 
     PUBLISHED = "published"
+    DELETED = "deleted"
 
-class FailModel(SQLModel):
+class PostModel(SQLModel):
     """
-    Модель для представления фейловых историй.
+    Модель для представления постовых историй.
 
     Attributes:
-        id (int): Уникальный идентификатор фейла.
-        user_id (int): Идентификатор пользователя, связанного с фейлом.
+        id (int): Уникальный идентификатор поста.
+        user_id (int): Идентификатор пользователя, связанного с постом.
         created_at (datetime): Дата и время создания записи.
         updated_at (datetime): Дата и время последнего обновления записи.
-        name (str): Название фейла.
-        description (str): Подробное описание фейла.
-        rating (int): Рейтинг фейла, основанный на голосах пользователей.
-        status (FailStatus): Статус фейла.
+        name (str): Название поста.
+        content (str): Подробное описание поста.
+        rating (int): Рейтинг поста, основанный на голосах пользователей.
+        status (PostStatus): Статус поста.
+        
+        user (UserModel): Пользователь, связанный с постом.
+        votes (List[VoteModel]): Список голосов, связанных с постом.
+        tags (List[TagModel]): Список тегов, связанных с постом.
     """
-    __tablename__ = "fails"
+    __tablename__ = "posts"
 
     id: Mapped[int] = mapped_column("id", primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     created_at: Mapped[datetime] = mapped_column("created_at", default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column("updated_at", default=datetime.now, onupdate=datetime.now)
     name: Mapped[str] = mapped_column("name", String(100))
-    description: Mapped[str] = mapped_column("description", String(1000))
+    content: Mapped[str] = mapped_column("description", String(1000))
     rating: Mapped[int] = mapped_column("rating", Integer, default=0)
-    status: Mapped[FailStatus] = mapped_column(default=FailStatus.DRAFT)
+    status: Mapped[PostStatus] = mapped_column(default=PostStatus.DRAFT)
     
-    user: Mapped["UserModel"] = relationship(back_populates="fails")
-    votes: Mapped[List["VoteModel"]] = relationship(back_populates="fail", cascade="all, delete")
+    user: Mapped["UserModel"] = relationship(back_populates="posts")
+    votes: Mapped[List["VoteModel"]] = relationship(back_populates="post", cascade="all, delete")
+    tags: Mapped[List["TagModel"]] = relationship(secondary="post_tags", back_populates="posts")

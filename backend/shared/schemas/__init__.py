@@ -3,14 +3,14 @@
 
 Этот модуль определяет список доступных схем, которые могут быть
 использованы в других частях приложения. Схемы включают в себя
-схему пользователя и схемы для работы с неудачами.
+схему пользователя и схемы для работы с постами.
 
 Экспортируемые классы:
 - UserSchema: Схема для представления данных пользователя.
-- FailSchema: Схема для представления данных о неудаче.
-- FailCreateSchema: Схема для создания новой записи о неудаче.
+- PostSchema: Схема для представления данных поста.
+- PostCreateSchema: Схема для создания новой записи поста.
 """
 from backend.shared.schemas.users import UserSchema
-from backend.shared.schemas.fails import FailSchema, FailCreateSchema
+from backend.shared.schemas.posts import PostSchema, PostCreateSchema
 
-__all__ = ["UserSchema", "FailSchema", "FailCreateSchema"]
+__all__ = ["UserSchema", "PostSchema", "PostCreateSchema"]

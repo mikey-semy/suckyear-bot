@@ -12,9 +12,9 @@
                 "callback_data": "menu_help"
             },
             {
-                "label": "join_channel",
-                "callback_data": "join_channel",
-                "url": "https://t.me/MTechJourney"
+                "label": "join_site",
+                "callback_data": "join_site",
+                "url": "https://suckyea.ru"
             }
         ]
     },
@@ -32,6 +32,24 @@
             {
                 "label": "back_to_main",
                 "callback_data": "menu_main"
+            }
+        ]
+    },
+    "help_menu_usage": {
+        "label": "help_usage_text",
+        "buttons": [
+            {
+                "label": "back_to_help",
+                "callback_data": "menu_help"
+            }
+        ]
+    },
+    "help_menu_rules": {
+        "label": "help_rules_text",
+        "buttons": [
+            {
+                "label": "back_to_help",
+                "callback_data": "menu_help"
             }
         ]
     }

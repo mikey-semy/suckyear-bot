@@ -25,12 +25,7 @@ async def set_bot_commands(bot: Bot, l10n: FluentLocalization):
         None
     """
     commands = [
-        BotCommand(command="start", description=l10n.format_value("intro-description")),
-        BotCommand(command="help", description=l10n.format_value("help-description")),
-        BotCommand(command="fail", description=l10n.format_value("fail-description")),
-        BotCommand(command="top", description=l10n.format_value("top-description")),
-        BotCommand(command="vote", description=l10n.format_value("vote-description")),
-        BotCommand(command="publics", description=l10n.format_value("publics-description")),
-        BotCommand(command="drafts", description=l10n.format_value("drafts-description")),
+        BotCommand(command="start", description=l10n.format_value("start-description")),
+        BotCommand(command="help", description=l10n.format_value("help-description"))
     ]   
     await bot.set_my_commands(commands, scope=BotCommandScopeDefault())

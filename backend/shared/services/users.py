@@ -11,11 +11,8 @@ ID чата, создания нового пользователя и полу�
 """
 from logging import info
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from backend.shared.models import UserModel
-from backend.shared.schemas.users import UserSchema
 from .base import BaseService
-
 
 class UserService(BaseService):
     """
@@ -37,7 +34,7 @@ class UserService(BaseService):
         query = select(UserModel).where(UserModel.chat_id == chat_id)
         result = await self.session.execute(query)
         user = result.scalar_one_or_none()
-        # Debug print
+
         info(f"Найден пользователь: {user.id if user else None} с ID чата: {chat_id}")
         return user
     

@@ -31,7 +31,7 @@ async def lifespan(_app: FastAPI):
 
         # Подключение хендлеров
         dp.include_router(all_handlers())
-    
+
         # Установка команд
         await set_bot_commands(bot, l10n)
       

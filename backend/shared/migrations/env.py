@@ -9,7 +9,7 @@ from alembic import context
 
 from backend.shared.models.base import SQLModel
 from backend.shared.models.users import UserModel
-from backend.shared.models.fails import FailModel
+from backend.shared.models.posts import PostModel
 from backend.settings import settings
 
 # this is the Alembic Config object, which provides

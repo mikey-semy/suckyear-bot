@@ -1,22 +1,22 @@
 # Сервисы бота
 
-## Управление фейлами (fails.py)
+## Управление постами (fails.py)
 
 ### Создание и публикация
-- [create_fail](fails.py#L29): Создание нового фейла
+- [create_fail](fails.py#L29): Создание нового поста
 - [publish_draft](fails.py#L277): Публикация черновика
-- [delete_fail](fails.py#L168): Удаление фейла
+- [delete_fail](fails.py#L168): Удаление поста
 
 ### Получение данных
-- [get_fail_by_id](fails.py#L128): Получение фейла по ID
-- [get_user_fails](fails.py#L146): Получение фейлов пользователя
+- [get_fail_by_id](fails.py#L128): Получение поста по ID
+- [get_user_fails](fails.py#L146): Получение постов пользователя
 - [get_user_drafts](fails.py#L256): Получение черновиков пользователя
-- [get_fails_for_voting](fails.py#L109): Получение фейлов для голосования
-- [get_top_losers](fails.py#L73): Получение топа лузеров
+- [get_fails_for_voting](fails.py#L109): Получение постов для голосования
+- [get_top_votes](fails.py#L73): Получение топа пользователей
 
 ### Голосование
 - [check_user_vote](fails.py#L189): Проверка голоса пользователя
-- [update_rating](fails.py#L210): Обновление рейтинга фейла
+- [update_rating](fails.py#L210): Обновление рейтинга поста
 
 ## Управление пользователями (users.py)
 - [get_by_chat_id](users.py#L29): Поиск пользователя по chat_id

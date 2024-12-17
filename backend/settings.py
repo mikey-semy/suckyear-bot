@@ -26,9 +26,6 @@ class Settings(BaseSettings):
     Наследуется от `BaseSettings` и загружает параметры из переменных окружения
     или файла `.env`. Обеспечивает типизацию и валидацию настроек.
 
-    Attributes:
-        bot_token (SecretStr): Токен бота для доступа к API.
-        dsn (str): Строка подключения к базе данных (по умолчанию - SQLite).
     """
     
     # Определение окружения
@@ -37,7 +34,7 @@ class Settings(BaseSettings):
     # Базовые настройки
     app_name: str = Field(default="SuckYearBot")
     app_version: str = Field(default="v1")
-    app_description: str = Field(default="SuckYearBot - бот, определяющий лоха года")
+    app_description: str = Field(default="SuckYearBot - бот, определяющий пользователя года")
     
     # Префикс для роутеров FastAPI
     api_prefix: str = f"/api/{ app_version }"
@@ -46,6 +43,7 @@ class Settings(BaseSettings):
     webhook_host: HttpUrl = Field(default="http://localhost")
     webhook_port: int = Field(default=8000)
     
+    # Токен бота
     bot_token: SecretStr = SecretStr(
         getenv('BOT_TOKEN_DEV' if environment == Environment.DEVELOPMENT else 'BOT_TOKEN')
     )
@@ -53,6 +51,7 @@ class Settings(BaseSettings):
     # База данных
     dsn: PostgresDsn | str =  Field(default="sqlite+aiosqlite:///./test.db")
     
+    # Конфигурация Alembic
     alembic_path: str = Field(default="backend/alembic.ini")
     
     # Документация

@@ -1,7 +1,7 @@
 from aiogram import Router
-from . import _fails, base
+from . import main, help 
 
-__all__ = ["base", "_fails"]
+__all__ = ["main", "help"]
 
 def all_handlers() -> Router:
     router = Router()

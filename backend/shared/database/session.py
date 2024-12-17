@@ -18,15 +18,15 @@ from backend.settings import settings
 
 # Создание асинхронного движка базы данных
 engine = create_async_engine(
-    url=settings.dsn, 
+    url=settings.dsn,
     echo=True,
     pool_pre_ping=True
 )
 
 # Создание фабрики асинхронных сессий
 async_session = sessionmaker(
-    engine, 
-    class_=AsyncSession, 
+    engine,
+    class_=AsyncSession,
     expire_on_commit=False
 )
 
