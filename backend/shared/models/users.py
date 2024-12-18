@@ -27,16 +27,13 @@ class UserModel(SQLModel):
     """
     Модель для представления пользователей.
 
-    Attributes:
-        id (int): Уникальный идентификатор пользователя.
+    Args:
         chat_id (int): Уникальный идентификатор чата пользователя.
         username (str): Имя пользователя.
         posts (List[PostModel]): Список постовых историй, связанных с пользователем.
     """
-    __tablename__ = "users"
+    chat_id: Mapped[int] = mapped_column(BigInteger, unique=True)
+    username: Mapped[str] = mapped_column(String(100))
     
-    id: Mapped[int] = mapped_column("id", primary_key=True, index=True)
-    chat_id: Mapped[int] = mapped_column("chat_id", BigInteger, unique=True)
-    username: Mapped[str] = mapped_column("username", String(100))
     posts: Mapped[List["PostModel"]] = relationship(back_populates="user")
     votes: Mapped[List["VoteModel"]] = relationship(back_populates="user")

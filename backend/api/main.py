@@ -9,7 +9,7 @@
     - Инициализацию локализации
     - Запуск приложения (dev или prod)
 
-Attributes:
+Args:
     app (FastAPI): Основной экземпляр FastAPI приложения
 """
 import logging

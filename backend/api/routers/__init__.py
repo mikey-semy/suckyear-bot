@@ -8,7 +8,7 @@ def all_routers(api_prefix: str = settings.api_prefix) -> APIRouter:
     """
     Возвращает APIRouter, содержащий все роутеры в папке routers для FastAPI.
     
-    Attributes:
+    Args:
         api_prefix (str): Префикс для всех роутеров.
         
     Returns:

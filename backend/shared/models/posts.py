@@ -13,7 +13,6 @@
 Этот модуль предназначен для использования в сочетании с SQLAlchemy ORM
 для выполнения операций с базой данных, связанных с инструкциями по эксплуатации.
 """
-from datetime import datetime
 from enum import Enum
 from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -30,7 +29,7 @@ class PostStatus(str, Enum):
     """
     Статус поста.
    
-    Attributes:
+    Args:
         DRAFT (str): Черновик поста.
         CHECKING (str): Пост на проверке.
         PUBLISHED (str): Опубликованный пост.
@@ -45,12 +44,9 @@ class PostModel(SQLModel):
     """
     Модель для представления постовых историй.
 
-    Attributes:
-        id (int): Уникальный идентификатор поста.
-        user_id (int): Идентификатор пользователя, связанного с постом.
-        created_at (datetime): Дата и время создания записи.
-        updated_at (datetime): Дата и время последнего обновления записи.
+    Args:
         name (str): Название поста.
+        author (int): Идентификатор пользователя, связанного с постом.
         content (str): Подробное описание поста.
         rating (int): Рейтинг поста, основанный на голосах пользователей.
         status (PostStatus): Статус поста.
@@ -59,15 +55,11 @@ class PostModel(SQLModel):
         votes (List[VoteModel]): Список голосов, связанных с постом.
         tags (List[TagModel]): Список тегов, связанных с постом.
     """
-    __tablename__ = "posts"
 
-    id: Mapped[int] = mapped_column("id", primary_key=True, index=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    created_at: Mapped[datetime] = mapped_column("created_at", default=datetime.now)
-    updated_at: Mapped[datetime] = mapped_column("updated_at", default=datetime.now, onupdate=datetime.now)
-    name: Mapped[str] = mapped_column("name", String(100))
-    content: Mapped[str] = mapped_column("description", String(1000))
-    rating: Mapped[int] = mapped_column("rating", Integer, default=0)
+    name: Mapped[str] = mapped_column(String(100))
+    author: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    content: Mapped[str] = mapped_column(String(1000))
+    rating: Mapped[int] = mapped_column(Integer, default=0)
     status: Mapped[PostStatus] = mapped_column(default=PostStatus.DRAFT)
     
     user: Mapped["UserModel"] = relationship(back_populates="posts")

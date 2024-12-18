@@ -10,10 +10,11 @@
 """
 from typing import TypeVar, Generic, Type, Any, List
 import logging
+from sqlalchemy import select, func, desc, asc
 from sqlalchemy.sql.expression import Executable
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
-from backend.shared.schemas.base import BaseSchema
+from backend.shared.schemas.base import BaseSchema, PaginationParams
 from backend.shared.models.base import SQLModel
 
 M = TypeVar("M", bound=SQLModel)
@@ -28,7 +29,7 @@ class SessionMixin:
         """
         Инициализирует SessionMixin.
 
-        Attributes:
+        Args:
             session (AsyncSession): Асинхронная сессия базы данных.
         """
         self.session = session
@@ -41,64 +42,90 @@ class BaseService(SessionMixin):
 class BaseDataManager(SessionMixin, Generic[T]):
     """
     Базовый класс для менеджеров данных с поддержкой обобщенных типов.
+    
+    Args:
+        session (AsyncSession): Асинхронная сессия базы данных.
+        schema (Type[T]): Тип схемы данных.
+        model (Type[M]): Тип модели.
     """
-    def __init__(self, session:AsyncSession, schema: Type[T]):
+    def __init__(self, session:AsyncSession, schema: Type[T], model: Type[M]):
         """
         Инициализирует BaseDataManager.
 
-        Attributes:
+        Args:
             session (AsyncSession): Асинхронная сессия базы данных.
             schema (Type[T]): Тип схемы данных.
+            model (Type[M]): Тип модели.
         """
         super().__init__(session)
         self.schema = schema
+        self.model = model
 
     async def add_one(self, model: Any) -> T:
         """
         Добавляет одну запись в базу данных.
 
-        Attributes:
+        Args:
             model (Any): Модель для добавления.
 
         Returns:
             T: Добавленная запись в виде схемы.
+        
+        Raises:
+            SQLAlchemyError: Если произошла ошибка при добавлении.
         """
-        self.session.add(model)
-        await self.session.commit()
-        await self.session.refresh(model)
-        return self.schema(**model.to_dict)
+        try:
+            self.session.add(model)
+            await self.session.commit()
+            await self.session.refresh(model)
+            return self.schema(**model.to_dict())
+        except SQLAlchemyError as e:
+            await self.session.rollback()
+            logging.error("Ошибка при добавлении: %s", e)
+            raise
 
     async def update_one(self, model_to_update, updated_model: Any) -> T | None:
         """
         Обновляет одну запись в базе данных.
 
-        Attributes:
+        Args:
             model_to_update: Модель для обновления.
             updated_model (Any): Обновленная модель.
 
         Returns:
             T | None: Обновленная запись в виде схемы или None, если запись не найдена.
+        
+        Raises: 
+            SQLAlchemyError: Если произошла ошибка при обновлении.
         """
-        if model_to_update:
-            updated_model_dict = updated_model.to_dict
-            for key, value in updated_model_dict.items():
+        try:
+            if not model_to_update:
+                return None
+
+            for key, value in updated_model.to_dict().items():
                 if key != "id":
                     setattr(model_to_update, key, value)
-        else:
-            return None
-        await self.session.commit()
-        await self.session.refresh(model_to_update)
-        return self.schema(**model_to_update.to_dict)
 
+            await self.session.commit()
+            await self.session.refresh(model_to_update)
+            return self.schema(**model_to_update.to_dict())
+        except SQLAlchemyError as e:
+            await self.session.rollback()
+            logging.error("Ошибка при обновлении: %s", e)
+            raise
+        
     async def delete_one(self, delete_statement: Executable) -> bool:
         """
         Удаляет одну запись из базы данных.
 
-        Attributes:
+        Args:
             delete_statement (Executable): SQL-запрос для удаления.
 
         Returns:
             bool: True, если запись удалена, False в противном случае.
+        
+        Raises:
+            SQLAlchemyError: Если произошла ошибка при удалении.
         """
         try:
             delete_statement = delete_statement.limit(1)
@@ -114,11 +141,14 @@ class BaseDataManager(SessionMixin, Generic[T]):
         """
         Удаляет все записи из базы данных, соответствующие заданному запросу.
 
-        Attributes:
+        Args:
             delete_statement (Executable): SQL-запрос для удаления.
 
         Returns:
             bool: True, если записи удалены, False в противном случае.
+        
+        Raises:
+            SQLAlchemyError: Если произошла ошибка при удалении.
         """
         try:
             result = await self.session.execute(delete_statement)
@@ -133,24 +163,77 @@ class BaseDataManager(SessionMixin, Generic[T]):
         """
         Получает одну запись из базы данных.
 
-        Attributes:
+        Args:
             select_statement (Executable): SQL-запрос для выборки.
 
         Returns:
             Any | None: Полученная запись или None, если запись не найдена.
+        
+        Raises: 
+            SQLAlchemyError: Если произошла ошибка при получении записи.
         """
-        result = await self.session.execute(select_statement)
-        return result.scalar()
+        try:
+            result = await self.session.execute(select_statement)
+            return result.scalar()
+        except SQLAlchemyError as e:
+            logging.error("Ошибка при получении записи: %s", e)
+            return None
 
-    async def get_all(self, select_statement: Executable) -> List[Any]:
+    async def get_all(self, select_statement: Executable) -> List[T]:
         """
-        Получает все записи из базы данных по заданному запросу.
-
-        Attributes:
+        Получает все записи из базы данных.
+    
+        Args:
             select_statement (Executable): SQL-запрос для выборки.
+    
+        Returns:
+            List[T]: Список всех записей.  
+        
+        Raises:
+            SQLAlchemyError: Если произошла ошибка при получении записей.
+        """
+        try:
+            result = await self.session.execute(select_statement)
+            items = result.unique().scalars().all()
+            return [self.schema.model_validate(item) for item in items]
+        except SQLAlchemyError as e:
+            logging.error("Ошибка при получении записей: %s", e)
+            return []
+        
+    async def get_paginated(
+        self,
+        select_statement: Executable,
+        pagination: PaginationParams,
+    ) -> tuple[List[T], int]:
+        """
+        Получает пагинированные записи из базы данных.
+
+        Args:
+            select_statement (Executable): SQL-запрос для выборки.
+            pagination (PaginationParams): Параметры пагинации.
 
         Returns:
-            List[Any]: Список полученных записей.
+            tuple[List[T], int]: Список пагинированных записей и общее количество записей.
+        
+        Raises:
+            SQLAlchemyError: Если произошла ошибка при получении пагинированных записей.
         """
-        result = await self.session.execute(select_statement)
-        return list(result.unique().scalars().all())
+        try:
+            total = await self.session.scalar(
+                select(func.count()).select_from(select_statement.subselect_statement())
+            )
+
+            sort_column = getattr(self.model, pagination.sort_by)
+
+            select_statement = select_statement.order_by(
+                desc(sort_column) if pagination.sort_desc else asc(sort_column)
+            )
+
+            select_statement = select_statement.offset(pagination.skip).limit(pagination.limit)
+
+            items = await self.get_all(select_statement)
+
+            return items, total
+        except SQLAlchemyError as e:
+            logging.error("Ошибка при получении пагинированных записей: %s", e)
+            return [], 0

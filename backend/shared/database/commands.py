@@ -20,7 +20,7 @@ class Migrate:
         
         #! Требуется создать для асинхронного алембик, так же требуется редактирование параметров в alembic.ini и в env.py
         
-        Attributes:
+        Args:
             name_folder (str, optional): Имя папки для миграций. По умолчанию "migrations".
             path_folder (str, optional): Путь к папке для миграций. По умолчанию ".".
         """
@@ -35,7 +35,7 @@ class Migrate:
         """
         Создает новую миграцию
 
-        Attributes:
+        Args:
             message (str): Сообщение для миграции
         """
         try:

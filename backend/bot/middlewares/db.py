@@ -24,7 +24,7 @@ class DatabaseMiddleware(BaseMiddleware):
     обработки событий Telegram, позволяя обработчикам использовать 
     сессию для выполнения операций с базой данных.
 
-    Attributes:
+    Args:
         handler (Callable): Обработчик события Telegram.
         event (TelegramObject): Объект события Telegram.
         data (Dict[str, Any]): Словарь данных, передаваемых в обработчик.
@@ -43,7 +43,7 @@ class DatabaseMiddleware(BaseMiddleware):
         ее в словарь данных, передаваемых в обработчик. После этого 
         вызывается обработчик события.
 
-        Attributes:
+        Args:
             handler (Callable): Обработчик события Telegram.
             event (TelegramObject): Объект события Telegram.
             data (Dict[str, Any]): Словарь данных, передаваемых в обработчик.

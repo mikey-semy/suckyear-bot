@@ -18,7 +18,7 @@ class UserMiddleware(BaseMiddleware):
     Этот класс отвечает за создание или получение пользователя
     в базе данных при получении сообщения от пользователя.
 
-    Attributes:
+    Args:
         None
     """
     async def __call__(
@@ -32,7 +32,7 @@ class UserMiddleware(BaseMiddleware):
         Если событие является сообщением, то происходит попытка
         получить или создать пользователя в базе данных.
 
-        Attributes:
+        Args:
             handler (Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]]): 
                 Обработчик события, который будет вызван после выполнения промежуточного ПО.
             event (TelegramObject): 

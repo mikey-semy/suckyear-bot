@@ -21,7 +21,7 @@ class UserService(BaseService):
     Этот класс предоставляет методы для получения, создания и управления
     пользователями в базе данных.
 
-    Attributes:
+    Args:
         session (AsyncSession): Асинхронная сессия для работы с базой данных.
     """
     async def get_by_chat_id(self, chat_id: int) -> UserModel | None:

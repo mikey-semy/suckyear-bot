@@ -29,7 +29,7 @@ class PostCreateSchema(BaseSchema):
     Этот класс определяет структуру данных, необходимых для создания
     новой записи поста, включая название и контекст.
 
-    Attributes:
+    Args:
         name (str): Название поста (максимум 100 символов).
         short_context (str): Краткий контекст поста (максимум 100 символов).
         full_context (str): Полный контекст поста (максимум 1000 символов).
@@ -45,16 +45,16 @@ class PostSchema(PostCreateSchema):
     Этот класс расширяет `PostCreateSchema`, добавляя дополнительные
     поля, такие как идентификатор, ID пользователя и временные метки.
 
-    Attributes: 
+    Args: 
         id (int): Уникальный идентификатор поста.
-        user_id (int): ID пользователя, связанного с постом.
+        author (int): ID пользователя, связанного с постом.
         rating (int): Количество голосов (по умолчанию 0).
         created_at (datetime): Дата и время создания записи поста.
         updated_at (datetime): Дата и время последнего обновления записи поста.
         user (UserSchema): Схема пользователя, связанного с постом.
     """
     id: int
-    user_id: int
+    author: int
     rating: int = 0
     created_at: datetime
     updated_at: datetime

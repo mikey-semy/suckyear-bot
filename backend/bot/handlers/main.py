@@ -25,7 +25,7 @@ async def cmd_start(message: Message, l10n: FluentLocalization):
     Отправляет приветственное сообщение пользователю.
     Выводит клавиатуру меню.
 
-    Attributes:
+    Args:
         message (Message): Сообщение пользователя.
         l10n (FluentLocalization): Локализация.
 

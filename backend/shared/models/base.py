@@ -12,11 +12,13 @@
 
 Модуль обеспечивает удобную работу с моделями данных и их преобразование в различные форматы.
 """
+from datetime import datetime
 import json
 from typing import Any, Dict, List, Type, TypeVar, Optional
-from sqlalchemy import MetaData, Dialect
+from sqlalchemy import MetaData, Dialect, Integer, TIMESTAMP
 from sqlalchemy.types import ARRAY, TypeDecorator, Text, JSON
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
+from sqlalchemy.ext.declarative import declared_attr
 
 T = TypeVar('T', bound='SQLModel')
 
@@ -27,34 +29,27 @@ class SQLModel(DeclarativeBase):
     Предоставляет удобные методы, которые можно использовать для
     преобразования модели в соответствующую схему.
     """
+    __abstract__ = True
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    created_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now)
+    updated_at: Mapped[datetime] = mapped_column(
+        TIMESTAMP,
+        default=datetime.now,
+        onupdate=datetime.now
+    )
+    
     metadata = MetaData()
-    @classmethod
-    def schema(cls: Type[T]) -> str:
+    
+    @declared_attr
+    def __tablename__(self: Type[T]) -> str:
         """
-        Возвращает имя схемы базы данных, на которую ссылается модель.
+        Возвращает имя таблицы для модели.
 
         Returns:
-            str: Имя схемы базы данных.
-
-        Raises:
-            ValueError: Если невозможно идентифицировать схему модели.
+            str: Имя таблицы в нижнем регистре и во множественном числе.
         """
-
-        _schema = cls.__mapper__.selectable.schema
-        if _schema is None:
-            raise ValueError("Невозможно идентифицировать схему модели")
-        return _schema
-
-    @classmethod
-    def table_name(cls: Type[T]) -> str:
-        """
-        Возвращает имя таблицы, на которую ссылается модель.
-
-        Returns:
-            str: Имя таблицы.
-        """
-
-        return cls.__tablename__
+        return self.__name__.lower() + 's'
 
     @classmethod
     def fields(cls: Type[T]) -> List[str]:
@@ -67,7 +62,6 @@ class SQLModel(DeclarativeBase):
 
         return cls.__mapper__.selectable.c.keys()
     
-    @property
     def to_dict(self) -> Dict[str, Any]:
         """
         Преобразует экземпляр модели в словарь.
@@ -76,11 +70,18 @@ class SQLModel(DeclarativeBase):
             Dict[str, Any]: Словарь, представляющий модель.
         """
 
-        _dict: Dict[str, Any] = {}
-        for key in self.__mapper__.c.keys():
-            _dict[key] = getattr(self, key)
-        return _dict
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
+    def __repr__(self) -> str:
+        """
+        Строковое представление экземпляра модели для удобства отладки.
+        Содержит идентификатор, дату создания и дату последнего обновления.
+        
+        Returns:
+            str: Строковое представление экземпляра модели.
+        """
+        return f"<{self.__class__.__name__}(id={self.id}, created_at={self.created_at}, updated_at={self.updated_at})>"
+    
 class ArrayOfStrings(TypeDecorator):
     """
     Пользовательский тип данных для работы с массивами строк.
@@ -95,7 +96,7 @@ class ArrayOfStrings(TypeDecorator):
         """
         Загружает соответствующую реализацию для конкретного диалекта базы данных.
 
-        Attributes:
+        Args:
             dialect: Диалект базы данных.
 
         Returns:
@@ -110,7 +111,7 @@ class ArrayOfStrings(TypeDecorator):
         """
         Обрабатывает параметр при привязке к базе данных.
 
-        Attributes:
+        Args:
             value: Значение для обработки.
             dialect: Диалект базы данных.
 
@@ -126,7 +127,7 @@ class ArrayOfStrings(TypeDecorator):
         """
         Обрабатывает значение, полученное из базы данных.
 
-        Attributes:
+        Args:
             value: Значение для обработки.
             dialect: Диалект базы данных.
 
@@ -142,7 +143,7 @@ class ArrayOfStrings(TypeDecorator):
         """
         Обрабатывает литеральный параметр.
 
-        Attributes:
+        Args:
             value: Значение для обработки.
             dialect: Диалект базы данных.
 

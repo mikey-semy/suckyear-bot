@@ -14,7 +14,7 @@ async def cmd_help(message: Message, l10n: FluentLocalization):
     Отправляет справочную информацию пользователю.
     Выводит клавиатуру меню.
     
-    Attributes:
+    Args:
         message (Message): Сообщение пользователя.
         l10n (FluentLocalization): Локализация.
 
@@ -30,7 +30,7 @@ async def callback_help(callback_query: CallbackQuery, l10n: FluentLocalization)
     Отправляет справочную информацию пользователю.
     Выводит клавиатуру меню.
     
-    Attributes:
+    Args:
         callback_query (types.CallbackQuery): Запрос обратного вызова.
         l10n (FluentLocalization): Локализация.
     """
@@ -44,7 +44,7 @@ async def process_help_usage(callback_query: CallbackQuery, l10n: FluentLocaliza
     Обработчик кнопки "Как использовать".
     Показывает инструкцию по использованию бота.
 
-    Attributes:
+    Args:
         callback_query (CallbackQuery): Колбэк от нажатия кнопки
         l10n (FluentLocalization): Локализация
     """
@@ -58,7 +58,7 @@ async def process_help_rules(callback_query: CallbackQuery, l10n: FluentLocaliza
     Обработчик кнопки "Правила".
     Показывает правила использования бота и сервиса.
 
-    Attributes:
+    Args:
         callback_query (CallbackQuery): Колбэк от нажатия кнопки
         l10n (FluentLocalization): Локализация для текстов
     """
@@ -72,7 +72,7 @@ async def process_back_to_main(callback_query: CallbackQuery, l10n: FluentLocali
     Обработчик кнопки "Назад в главное меню".
     Возвращает пользователя в главное меню.
 
-    Attributes:
+    Args:
         callback_query (CallbackQuery): Колбэк от нажатия кнопки
         l10n (FluentLocalization): Локализация
     """
@@ -86,7 +86,7 @@ async def process_back_to_help(callback_query: CallbackQuery, l10n: FluentLocali
     Обработчик кнопки "Назад в меню помощи".
     Возвращает пользователя в меню помощи.
 
-    Attributes:
+    Args:
         callback_query (CallbackQuery): Колбэк от нажатия кнопки
         l10n (FluentLocalization): Локализация
     """
