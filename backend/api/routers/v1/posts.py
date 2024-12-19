@@ -38,7 +38,7 @@ async def create_post(
             status_code=500,
             detail=f"Не удалось создать пост: {str(e)}"
         ) from e
-    
+
 @router.get("/{post_id}", response_model=PostSchema)
 async def get_post(
     post_id: int,

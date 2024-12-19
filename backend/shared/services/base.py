@@ -113,7 +113,7 @@ class BaseDataManager(SessionMixin, Generic[T]):
             await self.session.rollback()
             logging.error("Ошибка при обновлении: %s", e)
             raise
-        
+
     async def delete_one(self, delete_statement: Executable) -> bool:
         """
         Удаляет одну запись из базы данных.
@@ -199,7 +199,7 @@ class BaseDataManager(SessionMixin, Generic[T]):
         except SQLAlchemyError as e:
             logging.error("Ошибка при получении записей: %s", e)
             return []
-        
+
     async def get_paginated(
         self,
         select_statement: Executable,

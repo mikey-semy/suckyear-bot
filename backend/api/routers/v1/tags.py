@@ -36,7 +36,7 @@ async def add_tags(
             status_code=500,
             detail=f"Не удалось создать теги: {str(e)}"
         ) from e
-        
+
 @router.get("/{post_id}/tags", response_model=List[TagSchema]) 
 async def get_post_tags(
     post_id: int,

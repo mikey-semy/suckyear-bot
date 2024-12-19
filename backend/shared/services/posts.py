@@ -24,7 +24,7 @@ class PostService(BaseService):
         update_post: Обновляет существующий пост.
         delete_post: Удаляет пост из базы данных.
     """
-    
+
     async def create_post(self, post: PostCreateSchema, user_id: int) -> PostSchema:
         """
         Создает новый пост в базе данных.
@@ -37,7 +37,7 @@ class PostService(BaseService):
             PostSchema: Созданный пост
         """
         return PostDataManager(self.session).create_post(post, user_id)
-    
+
     async def get_post(self, post_id: int) -> PostSchema:
         """
         Возвращает пост по его ID.
@@ -98,7 +98,7 @@ class PostDataManager(BaseDataManager[PostSchema]):
                 schema=PostSchema, 
                 model=PostModel
             )
-    
+
     async def create_post(self, post: PostCreateSchema, user_id: int) -> PostSchema:
         """
         Создает новый пост в базе данных.
