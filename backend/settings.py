@@ -48,6 +48,13 @@ class Settings(BaseSettings):
         getenv('BOT_TOKEN_DEV' if environment == Environment.DEVELOPMENT else 'BOT_TOKEN')
     )
     
+    # Токен для доступа к API
+    auth_url: str = "token"
+    token_key: SecretStr
+    token_type: str = "bearer"
+    token_algorithm: str = "HS256"
+    token_expire_minutes: int = 60
+    
     # База данных
     dsn: PostgresDsn | str =  Field(default="sqlite+aiosqlite:///./test.db")
     

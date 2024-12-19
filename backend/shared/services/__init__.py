@@ -11,7 +11,7 @@
 - PostService: Сервис для работы с постами.
 """
 from backend.shared.services.base import BaseService
-from backend.shared.services.users import UserService
+from backend.shared.services.users import AuthDataManager as UserService
 from backend.shared.services.posts import PostService
 
 __all__ = ["BaseService", "UserService", "PostService"]

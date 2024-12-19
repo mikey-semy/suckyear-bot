@@ -13,33 +13,18 @@
 Этот модуль предназначен для использования в сочетании с SQLAlchemy ORM
 для выполнения операций с базой данных, связанных с инструкциями по эксплуатации.
 """
-from enum import Enum
+
 from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer, ForeignKey
 from backend.shared.models.base import SQLModel
-from backend.shared.models.tags import TagModel
+from backend.shared.schemas.posts import PostStatus
 from backend.shared.models.types import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .users import UserModel
     from .votes import VoteModel
-
-class PostStatus(str, Enum):
-    """
-    Статус поста.
-   
-    Args:
-        DRAFT (str): Черновик поста.
-        CHECKING (str): Пост на проверке.
-        PUBLISHED (str): Опубликованный пост.
-        DELETED (str): Удаленный пост.
-    """
-    DRAFT = "draft"
-    CHECKING = "checking" 
-    PUBLISHED = "published"
-    DELETED = "deleted"
-
+    from .tags import TagModel
 class PostModel(SQLModel):
     """
     Модель для представления постовых историй.

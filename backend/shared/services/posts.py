@@ -5,7 +5,9 @@ from backend.shared.models.posts import PostModel
 from backend.shared.models.tags import TagModel
 from backend.shared.models.post_tags import PostTagModel
 from backend.shared.schemas.base import PaginationParams
-from backend.shared.schemas.posts import PostSchema, PostCreateSchema, PostStatus
+from backend.shared.schemas.users import UserRole
+from backend.shared.schemas.posts import PostSchema, PostCreateSchema, PostUpdateSchema, PostStatus
+from backend.shared.exceptions.posts import PostNotFoundError, PostUpdateError
 from .base import BaseService, BaseDataManager
 
 class PostService(BaseService):
@@ -17,12 +19,12 @@ class PostService(BaseService):
    
     Methods:
         create_post: Создает новый пост в базе данных.
+        update_post_status: Обновляет статус поста.
         get_post: Возвращает пост по его идентификатору.
         get_posts: Возвращает список постов с пагинацией, поиском, фильтрацией и сортировкой.
         
         Ещё не реализованы:
         update_post: Обновляет существующий пост.
-        delete_post: Удаляет пост из базы данных.
     """
 
     async def create_post(self, post: PostCreateSchema, user_id: int) -> PostSchema:
@@ -38,6 +40,44 @@ class PostService(BaseService):
         """
         return PostDataManager(self.session).create_post(post, user_id)
 
+    async def update_post(
+        self,
+        post_id: int,
+        updated_data: PostUpdateSchema,
+        user_id: int,
+        user_role: UserRole
+    ) -> PostSchema:
+        """
+        Обновляет существующий пост.
+
+        Args:
+            post_id (int): ID обновляемого поста
+            updated_data (PostUpdateSchema): Данные для обновления поста
+            user_id (int): ID автора поста
+
+        Returns:
+            PostSchema: Обновленный пост
+        """
+        return PostDataManager(self.session).update_post(
+            post_id=post_id,
+            updated_data=updated_data,
+            user_id=user_id,
+            user_role=user_role
+        )
+        
+    async def update_post_status(self, post_id: int, status: PostStatus) -> PostSchema:
+        """
+        Обновляет статус поста в базе данных.
+        
+        Args:
+            post_id (int): ID поста
+            status (PostStatus): Новый статус поста
+        
+        Returns:
+            PostSchema: Обновленный пост
+        """
+        return PostDataManager(self.session).update_post_status(post_id, status)
+                
     async def get_post(self, post_id: int) -> PostSchema:
         """
         Возвращает пост по его ID.
@@ -115,6 +155,58 @@ class PostDataManager(BaseDataManager[PostSchema]):
         post_data['status'] = PostStatus.CHECKING
         post_model = PostModel(**post_data)
         return await self.add_one(post_model)
+    
+    async def update_post(
+        self,
+        post_id: int,
+        updated_data: PostUpdateSchema,
+        user_id: int,
+        user_role: UserRole,
+    ) -> PostSchema:
+        """
+        Обновляет пост в базе данных.
+
+        Args:
+            post_id (int): ID поста
+            updated_data (PostUpdateSchema): Данные для обновления поста
+            user_id (int): ID автора поста
+            user_role (UserRole): Роль пользователя
+
+        Returns:
+            PostSchema: Обновленный пост
+        """
+        statement = select(PostModel).where(PostModel.id == post_id)
+        post = await self.get_one(statement)
+        
+        if not post:
+            raise PostNotFoundError(post_id)
+        
+        if user_role not in [UserRole.ADMIN, UserRole.MODERATOR]:
+            if post.user_id != user_id:
+                raise PostUpdateError(post_id, "Нет прав на редактирование")
+        
+        updated_post = PostModel(**updated_data.model_dump())
+        return await self.update_one(post, updated_post)
+    
+    async def update_post_status(self, post_id: int, status: PostStatus) -> PostSchema:
+        """
+        Обновляет статус поста.
+
+        Args:
+            post_id (int): ID поста
+            status (PostStatus): Новый статус поста
+
+        Returns:
+            PostSchema: Обновленный пост
+        """
+        statement = select(PostModel).where(PostModel.id == post_id)
+        post = await self.get_one(statement)
+        
+        if not post:
+            return None
+        
+        updated_post = PostModel(id=post_id, status=status)
+        return await self.update_one(post, updated_post)
     
     async def get_post(self, post_id: int) -> PostSchema:
         """

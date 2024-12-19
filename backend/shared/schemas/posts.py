@@ -17,6 +17,15 @@ from backend.shared.schemas.base import BaseSchema
 from backend.shared.schemas.users import UserSchema
 
 class PostStatus(str, Enum):
+    """
+    Статус поста.
+   
+    Args:
+        DRAFT (str): Черновик поста.
+        CHECKING (str): Пост на проверке.
+        PUBLISHED (str): Опубликованный пост.
+        DELETED (str): Удаленный пост.
+    """
     DRAFT = "draft"
     CHECKING = "checking"
     PUBLISHED = "published"
@@ -37,7 +46,21 @@ class PostCreateSchema(BaseSchema):
     name: str = Field(max_length=100)
     content: str = Field(max_length=1000)
     status: PostStatus = PostStatus.DRAFT
+
+class PostUpdateSchema(BaseSchema):
+    """
+    Схема для обновления записи поста.
     
+    Этот класс определяет структуру данных, необходимых для обновления
+    записи поста, включая название, контекст и статус.
+    
+    Args:
+        name (str): Название поста (максимум 100 символов).
+        content (str): Полный контекст поста (максимум 1000 символов).
+    """
+    name: str = Field(max_length=100)
+    content: str = Field(max_length=1000)
+
 class PostSchema(PostCreateSchema):
     """
     Схема для представления данных поста.

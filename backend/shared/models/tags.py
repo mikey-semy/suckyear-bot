@@ -2,7 +2,10 @@ from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String
 from backend.shared.models.base import SQLModel
-from backend.shared.models.posts import PostModel
+from backend.shared.models.types import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .posts import PostModel
 
 class TagModel(SQLModel):
     """

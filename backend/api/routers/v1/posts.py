@@ -7,7 +7,7 @@ from backend.shared.database.session import get_async_session
 from backend.shared.schemas.base import Page, PaginationParams
 from backend.shared.schemas.posts import PostSchema, PostCreateSchema, PostStatus
 from backend.shared.services.posts import PostService
-from backend.shared.exceptions.posts import PostNotFoundError
+from backend.shared.exceptions.posts import PostNotFoundError, PostCreateError, PostUpdateError
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
 
@@ -34,10 +34,34 @@ async def create_post(
     try:
         return PostService(session).create_post(post, user_id)
     except SQLAlchemyError as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Не удалось создать пост: {str(e)}"
-        ) from e
+        raise PostCreateError(str(e)) from e
+
+@router.put("/{post_id}/status", response_model=PostSchema)
+async def update_post_status(
+    post_id: int,
+    status: PostStatus,
+    session: AsyncSession = Depends(get_async_session)
+) -> PostSchema:
+    """
+    Обновляет статус поста.
+
+    Args:
+        post_id (int): ID поста.
+        status (PostStatus): Новый статус поста.
+        session (AsyncSession): Асинхронная сессия базы данных.
+    Returns:
+        PostSchema: Обновленный пост.
+
+    Raises:
+        HTTPException: Если не удалось обновить статус поста.
+    """
+    try:
+        updated_post = await PostService(session).update_post_status(post_id, status)
+        if not updated_post:
+            raise PostNotFoundError(post_id)
+        return updated_post
+    except SQLAlchemyError as e:
+        raise PostUpdateError(post_id, str(e)) from e
 
 @router.get("/{post_id}", response_model=PostSchema)
 async def get_post(

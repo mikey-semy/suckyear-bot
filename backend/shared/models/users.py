@@ -18,6 +18,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, BigInteger
 from backend.shared.models.base import SQLModel
 from backend.shared.models.types import TYPE_CHECKING
+from backend.shared.schemas.users import UserRole
+
 if TYPE_CHECKING:
     from .posts import PostModel
     from .votes import VoteModel
@@ -32,8 +34,15 @@ class UserModel(SQLModel):
         username (str): Имя пользователя.
         posts (List[PostModel]): Список постовых историй, связанных с пользователем.
     """
-    chat_id: Mapped[int] = mapped_column(BigInteger, unique=True)
+    chat_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=True)
     username: Mapped[str] = mapped_column(String(100))
+    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=True)
+    role: Mapped[UserRole] = mapped_column(default=UserRole.USER)
+    hashed_password: Mapped[str] = mapped_column(String(100), nullable=True)
     
-    posts: Mapped[List["PostModel"]] = relationship(back_populates="user")
+    posts: Mapped[List["PostModel"]] = relationship(
+        back_populates="user",
+        lazy='joined',
+        cascade="all, delete-orphan",
+    )
     votes: Mapped[List["VoteModel"]] = relationship(back_populates="user")

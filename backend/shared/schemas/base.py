@@ -9,8 +9,8 @@
 Класс `BaseSchema` включает в себя настройки, которые позволяют
 использовать атрибуты модели в качестве полей схемы.
 """
-from pydantic import BaseModel, ConfigDict
 from typing import TypeVar, Generic, List
+from pydantic import BaseModel, ConfigDict
 
 
 class BaseSchema(BaseModel):

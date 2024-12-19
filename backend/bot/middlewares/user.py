@@ -9,8 +9,7 @@
 from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message
-from sqlalchemy.ext.asyncio import AsyncSession
-from backend.shared.services.users import UserService
+from backend.shared.services.users import AuthService
 
 class UserMiddleware(BaseMiddleware):
     """Промежуточное ПО для обработки пользователей.
@@ -47,8 +46,8 @@ class UserMiddleware(BaseMiddleware):
         if isinstance(event, Message):
             session = data.get("session")
             if session:
-                user_service = UserService(session)
-                await user_service.get_or_create_user(
+                user_service = AuthService(session)
+                await user_service.login_telegram_user(
                     chat_id=event.from_user.id,
                     username=event.from_user.username or str(event.from_user.id)
                 )
