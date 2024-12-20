@@ -21,6 +21,9 @@ RUN curl -sSL https://install.python-poetry.org | python3 - \
     && poetry config virtualenvs.create false
 
 COPY pyproject.toml poetry.lock ./
+COPY api api/
+COPY bot bot/
+COPY shared shared/
 
 RUN poetry config installer.max-workers 10 && \
     poetry install --no-dev --no-interaction --no-cache \
@@ -28,9 +31,7 @@ RUN poetry config installer.max-workers 10 && \
 
 EXPOSE 8000
 
-COPY . /usr/src/app
+COPY docker-entrypoint.sh .
+RUN chmod +x docker-entrypoint.sh
 
-COPY ./docker-entrypoint.sh /usr/src/app/docker-entrypoint.sh
-RUN chmod +x /usr/src/app/docker-entrypoint.sh
-
-ENTRYPOINT ["sh", "/usr/src/app/docker-entrypoint.sh"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
