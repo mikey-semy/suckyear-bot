@@ -44,10 +44,9 @@ class Settings(BaseSettings):
     webhook_port: int = Field(default=8000)
     
     # Токен бота
-    bot_token: SecretStr 
-    # = SecretStr(
-    #     getenv('BOT_TOKEN_DEV' if environment == Environment.DEVELOPMENT else 'BOT_TOKEN')
-    # )
+    bot_token: SecretStr = SecretStr(
+        getenv('BOT_TOKEN_DEV' if environment == Environment.DEVELOPMENT else 'BOT_TOKEN')
+    )
     
     # Токен для доступа к API
     auth_url: str = "token"
@@ -75,7 +74,8 @@ class Settings(BaseSettings):
     env: str = getenv("ENVIRONMENT", "development")
     model_config = SettingsConfigDict(
         #env_file=f".env.{Environment.DEVELOPMENT}",
-        env_file=f".env.{env}",
+        #env_file=f".env.{env}",
+        env_file=".env",
         env_file_encoding="utf-8",
         env_nested_delimiter="__"
     )
