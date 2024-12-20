@@ -51,7 +51,7 @@ def run():
         uvicorn.run(
             app,
             host="0.0.0.0",
-            port=settings.webhook_port
+            port=8000
         )
     except gaierror as e:
         logging.critical("Ошибка сетевого адреса: %s", e)
