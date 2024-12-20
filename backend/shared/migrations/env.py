@@ -7,10 +7,10 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
-from backend.shared.models.base import SQLModel
-from backend.shared.models.users import UserModel
-from backend.shared.models.posts import PostModel
-from backend.settings import settings
+from shared.models.base import SQLModel
+from shared.models.users import UserModel
+from shared.models.posts import PostModel
+from settings import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

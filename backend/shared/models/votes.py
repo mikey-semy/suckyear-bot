@@ -1,8 +1,8 @@
 from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, ForeignKey
-from backend.shared.models.base import SQLModel
-from backend.shared.models.types import TYPE_CHECKING
+from shared.models.base import SQLModel
+from shared.models.types import TYPE_CHECKING
 if TYPE_CHECKING:
     from .users import UserModel
     from .posts import PostModel

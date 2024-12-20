@@ -1,5 +1,5 @@
 from typing import Optional
-from backend.shared.schemas.base import BaseSchema
+from shared.schemas.base import BaseSchema
 
 class TagSchema(BaseSchema):
     """

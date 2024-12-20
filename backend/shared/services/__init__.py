@@ -10,8 +10,8 @@
 - UserService: Сервис для работы с пользователями.
 - PostService: Сервис для работы с постами.
 """
-from backend.shared.services.base import BaseService
-from backend.shared.services.users import AuthDataManager as UserService
-from backend.shared.services.posts import PostService
+from shared.services.base import BaseService
+from shared.services.users import AuthDataManager as UserService
+from shared.services.posts import PostService
 
 __all__ = ["BaseService", "UserService", "PostService"]

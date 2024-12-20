@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from backend.api.routers.v1 import bot
-from backend.settings import settings
+from api.routers.v1 import bot
+from settings import settings
 
 __all__ = ["bot"]
 

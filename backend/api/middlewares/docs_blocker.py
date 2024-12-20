@@ -1,7 +1,7 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
-from backend.settings import settings
+from settings import settings
 
 class BlockDocsMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):

@@ -9,7 +9,7 @@
 from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message
-from backend.shared.services.users import AuthService
+from shared.services.users import AuthService
 
 class UserMiddleware(BaseMiddleware):
     """Промежуточное ПО для обработки пользователей.

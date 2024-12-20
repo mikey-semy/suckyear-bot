@@ -13,8 +13,8 @@ Classes:
 from enum import Enum
 from datetime import datetime
 from pydantic import Field
-from backend.shared.schemas.base import BaseSchema
-from backend.shared.schemas.users import UserSchema
+from shared.schemas.base import BaseSchema
+from shared.schemas.users import UserSchema
 
 class PostStatus(str, Enum):
     """

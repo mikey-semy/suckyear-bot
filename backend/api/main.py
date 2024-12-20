@@ -17,10 +17,10 @@ from socket import gaierror
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.api.middlewares.docs_blocker import BlockDocsMiddleware
-from backend.api.routers import all_routers
-from backend.bot.main import lifespan
-from backend.settings import settings
+from api.middlewares.docs_blocker import BlockDocsMiddleware
+from api.routers import all_routers
+from bot.main import lifespan
+from settings import settings
 
 # Инициализация приложения FastAPI
 app = FastAPI(

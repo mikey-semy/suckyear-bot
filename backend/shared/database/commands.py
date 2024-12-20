@@ -2,7 +2,7 @@ import sys
 import logging
 from alembic.config import Config
 from alembic import command
-from backend.settings import settings
+from settings import settings
 
 class Migrate:
     """

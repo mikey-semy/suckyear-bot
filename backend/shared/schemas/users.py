@@ -10,7 +10,7 @@
 """
 from enum import Enum
 from datetime import datetime
-from backend.shared.schemas.base import BaseSchema
+from shared.schemas.base import BaseSchema
 
 class UserRole(str, Enum):
     """

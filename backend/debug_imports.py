@@ -3,5 +3,5 @@ print("Python path:")
 print("\n".join(sys.path))
 
 print("\nTrying import:")
-from backend.shared.models.base import SQLModel
+from shared.models.base import SQLModel
 print("Import successful!")

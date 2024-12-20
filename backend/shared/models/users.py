@@ -16,9 +16,9 @@
 from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, BigInteger
-from backend.shared.models.base import SQLModel
-from backend.shared.models.types import TYPE_CHECKING
-from backend.shared.schemas.users import UserRole
+from shared.models.base import SQLModel
+from shared.models.types import TYPE_CHECKING
+from shared.schemas.users import UserRole
 
 if TYPE_CHECKING:
     from .posts import PostModel

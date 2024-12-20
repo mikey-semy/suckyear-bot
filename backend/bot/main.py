@@ -4,10 +4,10 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
-from backend.bot.core.instance import dp, bot
-from backend.settings import settings, Environment
-from backend.bot.middlewares import L10nMiddleware, UserMiddleware, DatabaseMiddleware
-from backend.bot.handlers import all_handlers
+from bot.core.instance import dp, bot
+from settings import settings, Environment
+from bot.middlewares import L10nMiddleware, UserMiddleware, DatabaseMiddleware
+from bot.handlers import all_handlers
 from .locales.localization import setup_localization
 from .commandsworker import set_bot_commands
 

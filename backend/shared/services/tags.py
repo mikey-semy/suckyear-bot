@@ -1,8 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.shared.models.tags import TagModel
-from backend.shared.models.post_tags import PostTagModel
-from backend.shared.schemas.tags import TagSchema
+from shared.models.tags import TagModel
+from shared.models.post_tags import PostTagModel
+from shared.schemas.tags import TagSchema
 
 from .base import BaseService, BaseDataManager
 

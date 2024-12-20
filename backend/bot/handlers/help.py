@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command
 from fluent.runtime import FluentLocalization
-from backend.bot.keyboards.menu import MenuManager
+from bot.keyboards.menu import MenuManager
 
 router = Router()
 menu_manager = MenuManager()

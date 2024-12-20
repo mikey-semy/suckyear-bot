@@ -3,11 +3,11 @@ from fastapi import APIRouter, Depends, Query
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
-from backend.shared.database.session import get_async_session
-from backend.shared.schemas.base import Page, PaginationParams
-from backend.shared.schemas.posts import PostSchema, PostCreateSchema, PostStatus
-from backend.shared.services.posts import PostService
-from backend.shared.exceptions.posts import PostNotFoundError, PostCreateError, PostUpdateError
+from shared.database.session import get_async_session
+from shared.schemas.base import Page, PaginationParams
+from shared.schemas.posts import PostSchema, PostCreateSchema, PostStatus
+from shared.services.posts import PostService
+from shared.exceptions.posts import PostNotFoundError, PostCreateError, PostUpdateError
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
 

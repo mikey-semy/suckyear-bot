@@ -20,7 +20,7 @@ RUN curl -sSL https://install.python-poetry.org | python3 - \
     && ln -s /root/.local/bin/poetry /usr/local/bin/poetry \
     && poetry config virtualenvs.create false
 
-COPY pyproject.toml poetry.lock ./
+COPY ../pyproject.toml poetry.lock ./
 
 RUN poetry config installer.max-workers 10 && \
     poetry install --no-dev --no-interaction --no-cache \

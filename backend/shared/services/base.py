@@ -14,8 +14,8 @@ from sqlalchemy import select, func, desc, asc
 from sqlalchemy.sql.expression import Executable
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
-from backend.shared.schemas.base import BaseSchema, PaginationParams
-from backend.shared.models.base import SQLModel
+from shared.schemas.base import BaseSchema, PaginationParams
+from shared.models.base import SQLModel
 
 M = TypeVar("M", bound=SQLModel)
 T = TypeVar("T", bound=BaseSchema)

@@ -1,5 +1,5 @@
 from aiogram import Bot
-from backend.settings import settings
+from settings import settings
 
 async def clear():
     bot = Bot(token=settings.bot_token.get_secret_value())

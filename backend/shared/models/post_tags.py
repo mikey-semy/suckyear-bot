@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import ForeignKey, UniqueConstraint
-from backend.shared.models.base import SQLModel
+from shared.models.base import SQLModel
 
 
 class PostTagModel(SQLModel):

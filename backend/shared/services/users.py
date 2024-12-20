@@ -5,16 +5,16 @@ from jose import jwt, JWTError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
-from backend.shared.schemas.users import UserSchema, CreateUserSchema, TokenSchema
-from backend.shared.services.base import BaseService, BaseDataManager
-from backend.shared.models.users import UserModel
-from backend.shared.exceptions.users import (
+from shared.schemas.users import UserSchema, CreateUserSchema, TokenSchema
+from shared.services.base import BaseService, BaseDataManager
+from shared.models.users import UserModel
+from shared.exceptions.users import (
     TokenMissingError,
     InvalidCredentialsError,
     TokenExpiredError,
     AuthenticationError,
 )
-from backend.settings import settings
+from settings import settings
 
 oauth2_schema = OAuth2PasswordBearer(tokenUrl=settings.auth_url, auto_error=False)
 

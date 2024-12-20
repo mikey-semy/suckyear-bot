@@ -14,7 +14,7 @@ from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.shared.database.session import async_session
+from shared.database.session import async_session
 
 class DatabaseMiddleware(BaseMiddleware):
     """

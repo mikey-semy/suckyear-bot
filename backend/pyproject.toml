@@ -5,14 +5,18 @@ description = ""
 authors = ["MikhailTo <toshkin.mikhail@yandex.ru>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "backend"}]
+packages = [
+    { include = "api" },
+    { include = "bot" },
+    { include = "shared" }
+]
 
 [tool.poetry.scripts]
-api = "backend.api.main:run"
-dbinit = "backend.shared.database.commands:init"
-makemigrations = "backend.shared.database.commands:makemigrations"
-migrate = "backend.shared.database.commands:migrate"
-rollback = "backend.shared.database.commands:rollback"
+api = "api.main:run"
+dbinit = "shared.database.commands:init"
+makemigrations = "shared.database.commands:makemigrations"
+migrate = "shared.database.commands:migrate"
+rollback = "shared.database.commands:rollback"
 
 [tool.poetry.dependencies]
 python = "^3.12"

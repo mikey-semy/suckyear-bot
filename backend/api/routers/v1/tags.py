@@ -3,9 +3,9 @@ from fastapi import APIRouter, Depends
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
-from backend.shared.database.session import get_async_session
-from backend.shared.schemas.tags import TagSchema
-from backend.shared.services.tags import TagService
+from shared.database.session import get_async_session
+from shared.schemas.tags import TagSchema
+from shared.services.tags import TagService
 
 router = APIRouter(prefix="/tags", tags=["Tags"])
 

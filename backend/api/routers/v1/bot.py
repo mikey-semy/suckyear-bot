@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.bot.core.instance import dp, bot
+from bot.core.instance import dp, bot
 
 router = APIRouter()
 

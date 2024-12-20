@@ -1,13 +1,13 @@
 from typing import List
 from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.shared.models.posts import PostModel
-from backend.shared.models.tags import TagModel
-from backend.shared.models.post_tags import PostTagModel
-from backend.shared.schemas.base import PaginationParams
-from backend.shared.schemas.users import UserRole
-from backend.shared.schemas.posts import PostSchema, PostCreateSchema, PostUpdateSchema, PostStatus
-from backend.shared.exceptions.posts import PostNotFoundError, PostUpdateError
+from shared.models.posts import PostModel
+from shared.models.tags import TagModel
+from shared.models.post_tags import PostTagModel
+from shared.schemas.base import PaginationParams
+from shared.schemas.users import UserRole
+from shared.schemas.posts import PostSchema, PostCreateSchema, PostUpdateSchema, PostStatus
+from shared.exceptions.posts import PostNotFoundError, PostUpdateError
 from .base import BaseService, BaseDataManager
 
 class PostService(BaseService):

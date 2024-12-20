@@ -10,7 +10,7 @@
 - PostSchema: Схема для представления данных поста.
 - PostCreateSchema: Схема для создания новой записи поста.
 """
-from backend.shared.schemas.users import UserSchema
-from backend.shared.schemas.posts import PostSchema, PostCreateSchema
+from shared.schemas.users import UserSchema
+from shared.schemas.posts import PostSchema, PostCreateSchema
 
 __all__ = ["UserSchema", "PostSchema", "PostCreateSchema"]

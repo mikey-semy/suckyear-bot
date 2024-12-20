@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 from fluent.runtime import FluentLocalization, FluentResourceLoader
-from backend.bot.utils.plural import ru_plural
+from bot.utils.plural import ru_plural
 
 def setup_localization(base_path: Path = Path(__file__).parent) -> FluentLocalization:
     logging.info("""Loading localization from %s""", base_path)
