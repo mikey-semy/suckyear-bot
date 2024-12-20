@@ -19,7 +19,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.middlewares.docs_blocker import BlockDocsMiddleware
 from api.routers import all_routers
-from bot.main import lifespan
 from settings import settings
 
 # Инициализация приложения FastAPI
@@ -27,7 +26,6 @@ app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
     description=settings.app_description,
-    lifespan=lifespan
 )
 
 # Включение маршрутизаторов для обработки команд и сообщений

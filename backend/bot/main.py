@@ -1,4 +1,7 @@
 import logging
+from socket import gaierror
+import uvicorn
+from fastapi import FastAPI
 import asyncio
 from pathlib import Path
 from contextlib import asynccontextmanager
@@ -11,6 +14,26 @@ from bot.handlers import all_handlers
 from .locales.localization import setup_localization
 from .commandsworker import set_bot_commands
 
+async def setup_webhook():
+    health_url = f"{settings.internal_api_url}/health"
+    while True:
+        try:
+            async with bot.session.get(health_url) as response:
+                data = await response.json()
+                if data.get("status") == "ok":
+                    webhook_url = f"{settings.webhook_host}/webhook"
+                    await bot.set_webhook(
+                        url=webhook_url,
+                        max_connections=settings.webhook_max_connections,
+                        allowed_updates=settings.webhook_allowed_updates,
+                        drop_pending_updates=settings.webhook_drop_pending,
+                        secret_token=settings.webhook_secret_token.get_secret_value()
+                    )
+                    logging.info("Webhook запущен: %s", webhook_url)
+                    return
+        except:
+            await asyncio.sleep(settings.webhook_retry_delay)
+            logging.info("Ожидание готовности API...")
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
@@ -40,27 +63,8 @@ async def lifespan(_app: FastAPI):
             asyncio.create_task(dp.start_polling(bot, polling_timeout=30))
             logging.info("Polling started")
         else:
-            health_url = f"{settings.internal_api_url}/health"
-            for attempt in range(settings.webhook_setup_retries):
-                try:
-                    async with bot.session.get(health_url) as response:
-                        data = await response.json()
-                        if data.get("status") == "ok":
-                            webhook_url = f"{settings.webhook_host}/webhook"
-                            await bot.set_webhook(
-                                url=webhook_url,
-                                max_connections=settings.webhook_max_connections,
-                                allowed_updates=settings.webhook_allowed_updates,
-                                drop_pending_updates=settings.webhook_drop_pending,
-                                secret_token=settings.webhook_secret_token.get_secret_value()
-                            )
-                            logging.info("Webhook запущен: %s", webhook_url)
-                            break
-                except:
-                    pass
-                    
-                logging.warning(f"API не готов, попытка {attempt + 1} из {settings.webhook_setup_retries}")
-                await asyncio.sleep(settings.webhook_retry_delay)
+            asyncio.create_task(setup_webhook())
+            
         yield
         
     except Exception as e:
@@ -74,10 +78,24 @@ async def lifespan(_app: FastAPI):
         except Exception as e:
             logging.error("Ошибка остановки бота: %s", e)
 
-async def setup_webhook():
+app = FastAPI(lifespan=lifespan)
+
+def run():
+    """
+    Запуск бота с FastAPI.
+    """
     try:
-        webhook_url = f"{settings.webhook_host}/webhook"
-        await bot.set_webhook(url=webhook_url)
-        logging.info("Webhook запущен: %s", webhook_url)
-    except Exception as e:
-        logging.error("Ошибка установки вебхука: %s", e)
+        uvicorn.run(
+            app,
+            host="0.0.0.0",
+            port=settings.bot_port
+        )
+    except gaierror as e:
+        logging.critical("Ошибка сетевого адреса: %s", e)
+    except OSError as e:
+        logging.critical("Ошибка операционной системы: %s", e)
+    except KeyboardInterrupt:
+        logging.info("Получен сигнал остановки")
+
+if __name__ == "__main__":
+    run()
