@@ -6,4 +6,4 @@ echo "Применение миграции"
 poetry run migrate
 
 echo "Запуск сервисов через supervisor"
-/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+/usr/sbin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
