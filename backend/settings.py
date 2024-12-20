@@ -72,7 +72,7 @@ class Settings(BaseSettings):
     
     
     env: str = getenv("ENVIRONMENT", "development")
-
+    print(f"Environment: {env}")
     model_config = SettingsConfigDict(
         env_file=f".env.{env}" if env == "development" else None,
         env_file_encoding="utf-8",
