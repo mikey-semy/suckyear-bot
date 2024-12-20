@@ -16,12 +16,16 @@ from .commandsworker import set_bot_commands
 
 async def setup_webhook():
     health_url = f"{settings.internal_api_url}/health"
+    logging.info("Проверка доступности API по адресу: %s", health_url)
     while True:
         try:
             async with bot.session.get(health_url) as response:
                 data = await response.json()
+                logging.info("Статус: %s", data.get("status"))
                 if data.get("status") == "ok":
                     webhook_url = f"{settings.webhook_host}/webhook"
+                    logging.info("API запущен: %s", health_url)
+                    logging.info("Webhook приступает к запуску по адресу: %s", webhook_url)
                     await bot.set_webhook(
                         url=webhook_url,
                         max_connections=settings.webhook_max_connections,
