@@ -6,7 +6,7 @@ COPY package.json yarn.lock ./
 
 RUN yarn install --frozen-lockfile --production
 
-RUN yarn global add typescript
+RUN yarn
 
 COPY . ./
 
