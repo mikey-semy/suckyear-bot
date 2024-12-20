@@ -17,15 +17,20 @@ from .commandsworker import set_bot_commands
 async def setup_webhook():
     health_url = f"{settings.internal_api_url}/health"
     logging.info("Проверка доступности API по адресу: %s", health_url)
-    while True:
+    
+    retries = settings.webhook_setup_retries
+    
+    while retries > 0:
         try:
             async with bot.session.get(health_url) as response:
                 data = await response.json()
                 logging.info("Статус: %s", data.get("status"))
+                
                 if data.get("status") == "ok":
                     webhook_url = f"{settings.webhook_host}/webhook"
                     logging.info("API запущен: %s", health_url)
                     logging.info("Webhook приступает к запуску по адресу: %s", webhook_url)
+                    
                     await bot.set_webhook(
                         url=webhook_url,
                         max_connections=settings.webhook_max_connections,
@@ -33,11 +38,18 @@ async def setup_webhook():
                         drop_pending_updates=settings.webhook_drop_pending,
                         secret_token=settings.webhook_secret_token.get_secret_value()
                     )
+                    
                     logging.info("Webhook запущен: %s", webhook_url)
                     return
-        except:
+                    
+        except Exception as e:
+            retries -= 1
+            if retries == 0:
+                logging.error(f"Не удалось запустить webhook после {settings.webhook_setup_retries} попыток")
+                raise
+            
+            logging.info(f"Осталось попыток: {retries}. Ожидание {settings.webhook_retry_delay} секунд...")
             await asyncio.sleep(settings.webhook_retry_delay)
-            logging.info("Ожидание готовности API...")
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
