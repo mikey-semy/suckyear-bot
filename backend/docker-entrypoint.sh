@@ -3,7 +3,7 @@
 echo "Запуск скрипта docker-entrypoint.sh"
 
 echo "Применение миграции"
-poetry run alembic upgrade head
+poetry run migrate
 
 echo "Запуск бота"
-poetry run python -m bot.main
+poetry run api
