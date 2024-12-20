@@ -6,4 +6,4 @@ echo "Применение миграции"
 poetry run migrate
 
 echo "Запуск бота"
-poetry run bot
+poetry run api
