@@ -61,6 +61,6 @@ def run():
         logging.critical("Ошибка операционной системы: %s", e)
     except KeyboardInterrupt:
         logging.info("Получен сигнал остановки")
-
+    
 if __name__ == "__main__":
     run()

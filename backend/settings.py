@@ -39,14 +39,23 @@ class Settings(BaseSettings):
     # Префикс для роутеров FastAPI
     api_prefix: str = f"/api/{ app_version }"
     
-    # Webhook настройки
-    webhook_host: str = Field(default="https://api.suckyea.ru")
-    webhook_port: int = Field(default=8000)
-    
     # Токен бота
     bot_token: SecretStr = SecretStr(
         getenv('BOT_TOKEN_DEV' if environment == Environment.DEVELOPMENT else 'BOT_TOKEN')
     )
+    
+    # Webhook настройки
+    webhook_host: str = Field(default="https://api.suckyea.ru")
+    webhook_port: int = Field(default=8000)
+    # Настройки ретраев
+    webhook_setup_retries: int = 5
+    webhook_retry_delay: int = 2
+
+    # Настройки вебхука
+    webhook_max_connections: int = 40
+    webhook_allowed_updates: list[str] = ["message", "callback_query"]
+    webhook_drop_pending: bool = True
+    webhook_secret_token: SecretStr = bot_token.get_secret_value()
     
     # Токен для доступа к API
     auth_url: str = "token"

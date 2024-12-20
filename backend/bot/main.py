@@ -31,7 +31,7 @@ async def lifespan(_app: FastAPI):
 
         # Подключение хендлеров
         dp.include_router(all_handlers())
-        await asyncio.sleep(5)
+
         # Установка команд
         await set_bot_commands(bot, l10n)
       
@@ -40,11 +40,27 @@ async def lifespan(_app: FastAPI):
             asyncio.create_task(dp.start_polling(bot, polling_timeout=30))
             logging.info("Polling started")
         else:
-            webhook_url = f"{settings.webhook_host}/webhook"
-            logging.info("Webhook url: %s", webhook_url)
-            await bot.set_webhook(url=webhook_url)
-            logging.info("Webhook запущен: %s", webhook_url)
-
+            health_url = f"{settings.internal_api_url}/health"
+            for attempt in range(settings.webhook_setup_retries):
+                try:
+                    async with bot.session.get(health_url) as response:
+                        data = await response.json()
+                        if data.get("status") == "ok":
+                            webhook_url = f"{settings.webhook_host}/webhook"
+                            await bot.set_webhook(
+                                url=webhook_url,
+                                max_connections=settings.webhook_max_connections,
+                                allowed_updates=settings.webhook_allowed_updates,
+                                drop_pending_updates=settings.webhook_drop_pending,
+                                secret_token=settings.webhook_secret_token.get_secret_value()
+                            )
+                            logging.info("Webhook запущен: %s", webhook_url)
+                            break
+                except:
+                    pass
+                    
+                logging.warning(f"API не готов, попытка {attempt + 1} из {settings.webhook_setup_retries}")
+                await asyncio.sleep(settings.webhook_retry_delay)
         yield
         
     except Exception as e:
@@ -57,3 +73,11 @@ async def lifespan(_app: FastAPI):
             logging.info("Бот остановлен")
         except Exception as e:
             logging.error("Ошибка остановки бота: %s", e)
+
+async def setup_webhook():
+    try:
+        webhook_url = f"{settings.webhook_host}/webhook"
+        await bot.set_webhook(url=webhook_url)
+        logging.info("Webhook запущен: %s", webhook_url)
+    except Exception as e:
+        logging.error("Ошибка установки вебхука: %s", e)
