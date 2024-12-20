@@ -41,6 +41,7 @@ async def lifespan(_app: FastAPI):
             logging.info("Polling started")
         else:
             webhook_url = f"{settings.webhook_host}/webhook"
+            logging.info("Webhook url: %s", webhook_url)
             await bot.set_webhook(url=webhook_url)
             logging.info("Webhook запущен: %s", webhook_url)
 
