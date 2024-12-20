@@ -1,9 +1,9 @@
 from typing import List
 from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
-from shared.models.posts import PostModel
-from shared.models.tags import TagModel
-from shared.models.post_tags import PostTagModel
+from shared.models.posts import Post
+from shared.models.tags import Tag
+from shared.models.post_tags import PostTag
 from shared.schemas.base import PaginationParams
 from shared.schemas.users import UserRole
 from shared.schemas.posts import PostSchema, PostCreateSchema, PostUpdateSchema, PostStatus
@@ -127,7 +127,7 @@ class PostDataManager(BaseDataManager[PostSchema]):
     Args:
         session (AsyncSession): Асинхронная сессия базы данных.  
         schema (Type[PostSchema]): Схема данных поста.
-        model (Type[PostModel]): Модель данных поста.
+        model (Type[Post]): Модель данных поста.
     """
     def __init__(self, session: AsyncSession):
         """
@@ -136,7 +136,7 @@ class PostDataManager(BaseDataManager[PostSchema]):
         super().__init__(
                 session=session, 
                 schema=PostSchema, 
-                model=PostModel
+                model=Post
             )
 
     async def create_post(self, post: PostCreateSchema, user_id: int) -> PostSchema:
@@ -153,7 +153,7 @@ class PostDataManager(BaseDataManager[PostSchema]):
         post_data = post.model_dump()
         post_data['user_id'] = user_id
         post_data['status'] = PostStatus.CHECKING
-        post_model = PostModel(**post_data)
+        post_model = Post(**post_data)
         return await self.add_one(post_model)
     
     async def update_post(
@@ -175,7 +175,7 @@ class PostDataManager(BaseDataManager[PostSchema]):
         Returns:
             PostSchema: Обновленный пост
         """
-        statement = select(PostModel).where(PostModel.id == post_id)
+        statement = select(Post).where(Post.id == post_id)
         post = await self.get_one(statement)
         
         if not post:
@@ -185,7 +185,7 @@ class PostDataManager(BaseDataManager[PostSchema]):
             if post.user_id != user_id:
                 raise PostUpdateError(post_id, "Нет прав на редактирование")
         
-        updated_post = PostModel(**updated_data.model_dump())
+        updated_post = Post(**updated_data.model_dump())
         return await self.update_one(post, updated_post)
     
     async def update_post_status(self, post_id: int, status: PostStatus) -> PostSchema:
@@ -199,13 +199,13 @@ class PostDataManager(BaseDataManager[PostSchema]):
         Returns:
             PostSchema: Обновленный пост
         """
-        statement = select(PostModel).where(PostModel.id == post_id)
+        statement = select(Post).where(Post.id == post_id)
         post = await self.get_one(statement)
         
         if not post:
             return None
         
-        updated_post = PostModel(id=post_id, status=status)
+        updated_post = Post(id=post_id, status=status)
         return await self.update_one(post, updated_post)
     
     async def get_post(self, post_id: int) -> PostSchema:
@@ -218,7 +218,7 @@ class PostDataManager(BaseDataManager[PostSchema]):
         Returns:
             PostSchema: Найденный пост
         """
-        statement = select(PostModel).where(PostModel.id == post_id)
+        statement = select(Post).where(Post.id == post_id)
         return await self.get_one(statement)
 
     async def get_posts(
@@ -243,27 +243,27 @@ class PostDataManager(BaseDataManager[PostSchema]):
                 tuple[List[PostSchema], int]: Список постов и общее количество
         """
         # Создаем запрос для получения всех постов
-        statement = select(PostModel).distinct()
+        statement = select(Post).distinct()
 
         # Поиск по названию и контенту поста
         if search:
             statement = statement.filter(
                 or_(
-                    PostModel.name.ilike(f"%{search}%"),
-                    PostModel.content.ilike(f"%{search}%")
+                    Post.name.ilike(f"%{search}%"),
+                    Post.content.ilike(f"%{search}%")
                 )
             )
         
         # Фильтр по статусу
         if status:
-            statement = statement.filter(PostModel.status == status)
+            statement = statement.filter(Post.status == status)
         
         # Фильтр по тегам
         if tags: 
-            statement = statement.join(PostTagModel).join(TagModel).filter(TagModel.name.in_(tags))
+            statement = statement.join(PostTag).join(Tag).filter(Tag.name.in_(tags))
             
         # Фильтр по пользователю
         if user_id:
-            statement = statement.filter(PostModel.author == user_id)
+            statement = statement.filter(Post.author == user_id)
         
         return await self.get_paginated(statement, pagination)

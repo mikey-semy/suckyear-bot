@@ -5,16 +5,16 @@ from shared.models.base import SQLModel
 from shared.models.types import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .posts import PostModel
+    from .posts import Post
 
-class TagModel(SQLModel):
+class Tag(SQLModel):
     """
     Модель для тегов
     
     Args:
         name (str): Название тега.
-        posts (List[PostModel]): Список постов, связанных с тегом.
+        posts (List[Post]): Список постов, связанных с тегом.
     """
     name: Mapped[str] = mapped_column(String(50), unique=True)
     
-    posts: Mapped[List["PostModel"]] = relationship(secondary="post_tags", back_populates="tags")
+    posts: Mapped[List["Post"]] = relationship(secondary="posttags", back_populates="tags")

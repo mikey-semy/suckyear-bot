@@ -1,5 +1,5 @@
-from shared.models.users import UserModel
-from shared.models.posts import PostModel, PostStatus
-from shared.models.votes import VoteModel
+from shared.models.users import User
+from shared.models.posts import Post, PostStatus
+from shared.models.votes import Vote
 
-__all__ = ["UserModel", "PostModel", "PostStatus", "VoteModel"]
+__all__ = ["User", "Post", "PostStatus", "Vote"]

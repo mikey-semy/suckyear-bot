@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from shared.models.tags import TagModel
-from shared.models.post_tags import PostTagModel
+from shared.models.tags import Tag
+from shared.models.post_tags import PostTag
 from shared.schemas.tags import TagSchema
 
 from .base import BaseService, BaseDataManager
@@ -64,13 +64,13 @@ class TagService(BaseService):
         return await TagDataManager(self.session).get_tags_by_ids(tag_ids)
 
 
-class TagDataManager(BaseDataManager[TagSchema, TagModel]):
+class TagDataManager(BaseDataManager[TagSchema, Tag]):
     """
     Менеджер данных для работы с тегами.
     
     Args:
         session (AsyncSession): Асинхронная сессия базы данных.
-        model (Type[TagModel]): Модель тега.
+        model (Type[Tag]): Модель тега.
         schema (Type[TagSchema]): Схема тега.
     """
     def __init__(self, session: AsyncSession):
@@ -80,7 +80,7 @@ class TagDataManager(BaseDataManager[TagSchema, TagModel]):
         super().__init__(
                 session=session,
                 schema=TagSchema,
-                model=TagModel
+                model=Tag
             )
         
     async def add_tags(self, tag_names: list[str]) -> list[int]:
@@ -122,7 +122,7 @@ class TagDataManager(BaseDataManager[TagSchema, TagModel]):
         """
         # Создаем связи только для существующих постов и тегов
         post_tags = [
-            PostTagModel(post_id=pair_dict['post_id'], tag_id=pair_dict['tag_id'])
+            PostTag(post_id=pair_dict['post_id'], tag_id=pair_dict['tag_id'])
             for pair_dict in post_tag_pairs
             if pair_dict['post_id'] and pair_dict['tag_id']
         ]
@@ -141,7 +141,7 @@ class TagDataManager(BaseDataManager[TagSchema, TagModel]):
         Returns:
             list[TagSchema]: Список тегов.
         """
-        statement = select(self.model).join(PostTagModel).filter(PostTagModel.post_id == post_id)
+        statement = select(self.model).join(PostTag).filter(PostTag.post_id == post_id)
         return await self.get_all(statement)
 
     async def get_tags_by_ids(self, tag_ids: list[int]) -> list[TagSchema]:

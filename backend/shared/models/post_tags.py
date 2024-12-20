@@ -3,7 +3,7 @@ from sqlalchemy import ForeignKey, UniqueConstraint
 from shared.models.base import SQLModel
 
 
-class PostTagModel(SQLModel):
+class PostTag(SQLModel):
     """
     Промежуточная таблица для связи постов и тегов
     

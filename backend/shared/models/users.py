@@ -2,7 +2,7 @@
 Модуль, содержащий модели данных для работы с пользователями.
 
 Этот модуль определяет следующие модели SQLAlchemy:
-- UserModel: представляет пользователя в системе.
+- User: представляет пользователя в системе.
 
 Модель наследуется от базового класса SQLModel и определяет 
 соответствующие поля и отношения между таблицами базы данных.
@@ -21,18 +21,18 @@ from shared.models.types import TYPE_CHECKING
 from shared.schemas.users import UserRole
 
 if TYPE_CHECKING:
-    from .posts import PostModel
-    from .votes import VoteModel
+    from .posts import Post
+    from .votes import Vote
     
     
-class UserModel(SQLModel):
+class User(SQLModel):
     """
     Модель для представления пользователей.
 
     Args:
         chat_id (int): Уникальный идентификатор чата пользователя.
         username (str): Имя пользователя.
-        posts (List[PostModel]): Список постовых историй, связанных с пользователем.
+        posts (List[Post]): Список постовых историй, связанных с пользователем.
     """
     chat_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=True)
     username: Mapped[str] = mapped_column(String(100))
@@ -40,9 +40,9 @@ class UserModel(SQLModel):
     role: Mapped[UserRole] = mapped_column(default=UserRole.USER)
     hashed_password: Mapped[str] = mapped_column(String(100), nullable=True)
     
-    posts: Mapped[List["PostModel"]] = relationship(
+    posts: Mapped[List["Post"]] = relationship(
         back_populates="user",
         lazy='joined',
         cascade="all, delete-orphan",
     )
-    votes: Mapped[List["VoteModel"]] = relationship(back_populates="user")
+    votes: Mapped[List["Vote"]] = relationship(back_populates="user")

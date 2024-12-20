@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
 from shared.schemas.users import UserSchema, CreateUserSchema, TokenSchema
 from shared.services.base import BaseService, BaseDataManager
-from shared.models.users import UserModel
+from shared.models.users import User
 from shared.exceptions.users import (
     TokenMissingError,
     InvalidCredentialsError,
@@ -87,7 +87,7 @@ class AuthService(HashingMixin, BaseService):
         Returns:
             Экземпляр созданного пользователя.
         """
-        user_model = UserModel(
+        user_model = User(
             username=user.username,
             email=user.email,
             hashed_password=self.bcrypt(user.password)
@@ -106,7 +106,7 @@ class AuthService(HashingMixin, BaseService):
         Returns:
             Экземпляр созданного пользователя.
         """
-        user_model = UserModel(
+        user_model = User(
             chat_id=chat_id,
             username=username
         )
@@ -210,10 +210,10 @@ class AuthDataManager(BaseDataManager[UserSchema]):
         super().__init__(
             session=session,
             schema=UserSchema,
-            model=UserModel
+            model=User
         )
 
-    async def add_user(self, user: UserModel) -> None:
+    async def add_user(self, user: User) -> None:
         """
         Добавляет нового пользователя в базу данных.
 

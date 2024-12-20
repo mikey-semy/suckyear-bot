@@ -2,7 +2,7 @@
 Модуль, содержащий модели данных для работы с инструкциями по эксплуатации.
 
 Этот модуль определяет следующие модели SQLAlchemy:
-- PostModel: представляет инструкцию по эксплуатации
+- Post: представляет инструкцию по эксплуатации
 
 Модель наследуется от базового класса SQLModel и определяет 
 соответствующие поля и отношения между таблицами базы данных.
@@ -22,10 +22,10 @@ from shared.schemas.posts import PostStatus
 from shared.models.types import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .users import UserModel
-    from .votes import VoteModel
-    from .tags import TagModel
-class PostModel(SQLModel):
+    from .users import User
+    from .votes import Vote
+    from .tags import Tag
+class Post(SQLModel):
     """
     Модель для представления постовых историй.
 
@@ -36,9 +36,9 @@ class PostModel(SQLModel):
         rating (int): Рейтинг поста, основанный на голосах пользователей.
         status (PostStatus): Статус поста.
         
-        user (UserModel): Пользователь, связанный с постом.
-        votes (List[VoteModel]): Список голосов, связанных с постом.
-        tags (List[TagModel]): Список тегов, связанных с постом.
+        user (User): Пользователь, связанный с постом.
+        votes (List[Vote]): Список голосов, связанных с постом.
+        tags (List[Tag]): Список тегов, связанных с постом.
     """
 
     name: Mapped[str] = mapped_column(String(100))
@@ -47,6 +47,6 @@ class PostModel(SQLModel):
     rating: Mapped[int] = mapped_column(Integer, default=0)
     status: Mapped[PostStatus] = mapped_column(default=PostStatus.DRAFT)
     
-    user: Mapped["UserModel"] = relationship(back_populates="posts")
-    votes: Mapped[List["VoteModel"]] = relationship(back_populates="post", cascade="all, delete")
-    tags: Mapped[List["TagModel"]] = relationship(secondary="post_tags", back_populates="posts")
+    user: Mapped["User"] = relationship(back_populates="posts")
+    votes: Mapped[List["Vote"]] = relationship(back_populates="post", cascade="all, delete")
+    tags: Mapped[List["Tag"]] = relationship(secondary="posttags", back_populates="posts")

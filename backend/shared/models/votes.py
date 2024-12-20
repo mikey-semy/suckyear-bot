@@ -4,10 +4,10 @@ from sqlalchemy import Integer, ForeignKey
 from shared.models.base import SQLModel
 from shared.models.types import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .users import UserModel
-    from .posts import PostModel
+    from .users import User
+    from .posts import Post
     
-class VoteModel(SQLModel):
+class Vote(SQLModel):
     """
     Модель для представления голосов пользователей за посты.
 
@@ -21,5 +21,5 @@ class VoteModel(SQLModel):
     post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"))
     rating: Mapped[int] = mapped_column(Integer, default=0)
 
-    user: Mapped["UserModel"] = relationship(back_populates="votes")
-    post: Mapped["PostModel"] = relationship(back_populates="votes")
+    user: Mapped["User"] = relationship(back_populates="votes")
+    post: Mapped["Post"] = relationship(back_populates="votes")
