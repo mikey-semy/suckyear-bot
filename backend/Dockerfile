@@ -24,6 +24,8 @@ COPY pyproject.toml poetry.lock ./
 COPY api api/
 COPY bot bot/
 COPY shared shared/
+COPY settings.py ./
+COPY alembic.ini ./
 
 RUN poetry config installer.max-workers 10 && \
     poetry install --no-dev --no-interaction --no-cache \
