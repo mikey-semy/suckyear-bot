@@ -32,7 +32,7 @@ RUN poetry config installer.max-workers 10 && \
     poetry install --no-dev --no-interaction --no-cache \
     && apk del .build-deps
 
-EXPOSE 8000
+EXPOSE 8000 8443
 
 COPY docker-entrypoint.sh .
 RUN chmod +x docker-entrypoint.sh
