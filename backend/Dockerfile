@@ -28,8 +28,9 @@ RUN poetry config installer.max-workers 10 && \
 
 EXPOSE 8000
 
-COPY . .
+COPY . /usr/src/app
 
-RUN chmod +x docker-entrypoint.sh
+COPY ./docker-entrypoint.sh /usr/src/app/docker-entrypoint.sh
+RUN chmod +x /usr/src/app/docker-entrypoint.sh
 
-ENTRYPOINT ["sh", "./docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "/usr/src/app/docker-entrypoint.sh"]
