@@ -16,7 +16,7 @@ RUN apk add --no-cache --virtual .build-deps \
     poppler-utils \
     curl
 
-RUN apt-get update && apt-get install -y supervisor
+RUN apk add --no-cache supervisor
 
 RUN curl -sSL https://install.python-poetry.org | python3 - \
     && ln -s /root/.local/bin/poetry /usr/local/bin/poetry \
