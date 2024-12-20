@@ -21,6 +21,7 @@ RUN curl -sSL https://install.python-poetry.org | python3 - \
     && poetry config virtualenvs.create false
 
 COPY pyproject.toml poetry.lock ./
+COPY __init__.py ./
 COPY api api/
 COPY bot bot/
 COPY shared shared/
