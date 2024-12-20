@@ -43,11 +43,12 @@ class Settings(BaseSettings):
     bot_token: SecretStr = SecretStr(
         getenv('BOT_TOKEN_DEV' if environment == Environment.DEVELOPMENT else 'BOT_TOKEN')
     )
-    bot_port: int = Field(default=443)
+    
     internal_api_url: str = "http://api:8000"
     # Webhook настройки
     webhook_host: str = Field(default="https://api.suckyea.ru")
     webhook_port: int = Field(default=8000)
+    bot_port: int = Field(default=8443)
     # Настройки ретраев
     webhook_setup_retries: int = 10
     webhook_retry_delay: int = 5
