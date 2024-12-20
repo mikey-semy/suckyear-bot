@@ -44,6 +44,7 @@ class Settings(BaseSettings):
         getenv('BOT_TOKEN_DEV' if environment == Environment.DEVELOPMENT else 'BOT_TOKEN')
     )
     
+    internal_api_url: str = "http://api:8000"
     # Webhook настройки
     webhook_host: str = Field(default="https://api.suckyea.ru")
     webhook_port: int = Field(default=8000)
