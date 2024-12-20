@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["MikhailTo <toshkin.mikhail@yandex.ru>"]
 license = "MIT"
-readme = "README.md"
 packages = [
     { include = "api" },
     { include = "bot" },
