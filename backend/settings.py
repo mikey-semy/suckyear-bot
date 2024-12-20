@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     api_prefix: str = f"/api/{ app_version }"
     
     # Webhook настройки
-    webhook_host: HttpUrl = Field(default="http://localhost")
+    webhook_host: str = Field(default="https://api.suckyea.ru")
     webhook_port: int = Field(default=8000)
     
     # Токен бота
