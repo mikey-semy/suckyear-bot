@@ -77,6 +77,9 @@ class Settings(BaseSettings):
         env_file=f".env.{env}" if env == "development" else None,
         env_file_encoding="utf-8",
         env_nested_delimiter="__"
+        env_prefix="",  # без префикса
+        case_sensitive=False,  # регистр неважен
+        extra="ignore"  # игнорируем лишние переменные
     )
 
 settings = Settings()
