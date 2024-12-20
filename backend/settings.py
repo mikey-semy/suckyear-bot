@@ -44,9 +44,10 @@ class Settings(BaseSettings):
     webhook_port: int = Field(default=8000)
     
     # Токен бота
-    bot_token: SecretStr = SecretStr(
-        getenv('BOT_TOKEN_DEV' if environment == Environment.DEVELOPMENT else 'BOT_TOKEN')
-    )
+    bot_token: SecretStr 
+    # = SecretStr(
+    #     getenv('BOT_TOKEN_DEV' if environment == Environment.DEVELOPMENT else 'BOT_TOKEN')
+    # )
     
     # Токен для доступа к API
     auth_url: str = "token"
