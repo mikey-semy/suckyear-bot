@@ -16,6 +16,8 @@ RUN apk add --no-cache --virtual .build-deps \
     poppler-utils \
     curl
 
+RUN apt-get update && apt-get install -y supervisor
+
 RUN curl -sSL https://install.python-poetry.org | python3 - \
     && ln -s /root/.local/bin/poetry /usr/local/bin/poetry \
     && poetry config virtualenvs.create false
@@ -34,7 +36,14 @@ RUN poetry config installer.max-workers 10 && \
 
 EXPOSE 8000 8443
 
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker-entrypoint.sh .
 RUN chmod +x docker-entrypoint.sh
 
 ENTRYPOINT ["/bin/sh", "./docker-entrypoint.sh"]
+
+
+
+
+
+CMD ["/usr/bin/supervisord"]

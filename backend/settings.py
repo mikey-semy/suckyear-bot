@@ -48,7 +48,7 @@ class Settings(BaseSettings):
     # Webhook настройки
     webhook_host: str = Field(default="https://api.suckyea.ru")
     webhook_port: int = Field(default=8000)
-    bot_port: int = Field(default=8443)
+    bot_port: int = Field(default=8001)
     # Настройки ретраев
     webhook_setup_retries: int = 10
     webhook_retry_delay: int = 5
