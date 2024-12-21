@@ -20,10 +20,8 @@ async def setup_webhook():
     
     await bot.set_webhook(
         url=webhook_url,
-        max_connections=settings.webhook_max_connections,
-        allowed_updates=settings.webhook_allowed_updates,
-        drop_pending_updates=settings.webhook_drop_pending,
-        secret_token=settings.webhook_secret_token.get_secret_value()
+        allowed_updates=dp.resolve_used_update_types(),
+        drop_pending_updates=True
     )
     
     logging.info("Webhook запущен: %s", webhook_url)
