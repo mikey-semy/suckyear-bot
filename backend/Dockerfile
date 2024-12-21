@@ -16,8 +16,8 @@ RUN apk add --no-cache \
     libpq \
     poppler-utils \
     curl
-    
-RUN pip install --no-cache-dir poetry==1.9.1
+
+RUN pip install --no-cache-dir poetry
 
 COPY pyproject.toml poetry.lock ./
 COPY __init__.py ./
