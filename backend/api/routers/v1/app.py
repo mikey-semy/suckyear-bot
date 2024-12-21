@@ -12,7 +12,3 @@ router.mount(
     app=StaticFiles(directory=str(FRONTEND_DIST), html=True),
     name="static"
     )
-
-@router.get("/health")
-async def health_check():
-    return {"status": "ok"}

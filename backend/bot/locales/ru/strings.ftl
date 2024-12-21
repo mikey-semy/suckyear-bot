@@ -11,4 +11,5 @@ back_to_help = ⬅️ Назад в меню помощи
 help_usage_text = Инструкция по использованию...
 help_rules_text = Правила использования...
 
-start-description = Команда /start запускает бот.
+start-description = Запускает бота.
+help-description = Запускает меню помощи.

@@ -5,7 +5,7 @@
             {
                 "label": "open_webapp",
                 "callback_data": "open_app",
-                "web_app": "https://suckyea.ru/api/v1/app"
+                "web_app": "https://suckyea.ru"
             },
             {
                 "label": "help_section",
