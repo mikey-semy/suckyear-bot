@@ -29,8 +29,7 @@ COPY shared shared/
 COPY settings.py ./
 COPY alembic.ini ./
 
-RUN poetry config installer.max-workers 10 && \
-    poetry install --no-dev --no-interaction --no-cache \
+RUN poetry install --no-dev --no-interaction --no-cache \
     && apk del .build-deps
 
 EXPOSE 8000 8443
