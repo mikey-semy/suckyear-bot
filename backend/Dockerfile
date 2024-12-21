@@ -9,14 +9,12 @@ RUN apk add --no-cache --virtual .build-deps \
     gcc \
     python3-dev \
     musl-dev \
-    postgresql-dev
-
-RUN apk add --no-cache \
+    postgresql-dev \
+    && apk add --no-cache \
     postgresql-client \
     libpq \
     poppler-utils \
-    curl \
-    supervisor
+    curl
 
 RUN curl -sSL https://install.python-poetry.org | python3 - \
     && ln -s /root/.local/bin/poetry /usr/local/bin/poetry \
@@ -36,14 +34,7 @@ RUN poetry config installer.max-workers 10 && \
 
 EXPOSE 8000 8443
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker-entrypoint.sh .
 RUN chmod +x docker-entrypoint.sh
 
 ENTRYPOINT ["/bin/sh", "./docker-entrypoint.sh"]
-
-
-
-
-
-CMD ["/usr/bin/supervisord"]
