@@ -10,7 +10,7 @@ RUN apk add --no-cache --virtual .build-deps \
     python3-dev \
     musl-dev \
     postgresql-dev
-    
+
 RUN apk add --no-cache \
     postgresql-client \
     libpq \
@@ -19,7 +19,9 @@ RUN apk add --no-cache \
 
 RUN curl -sSL https://install.python-poetry.org | python3 - \
     && ln -s /root/.local/bin/poetry /usr/local/bin/poetry \
-    && poetry config virtualenvs.create false
+    && poetry config virtualenvs.create false \
+    && poetry config installer.timeout 180 \
+    && poetry config installer.max-retries 5
 
 COPY pyproject.toml poetry.lock ./
 COPY __init__.py ./
