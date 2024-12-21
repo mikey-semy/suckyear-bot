@@ -1,11 +1,10 @@
 import logging
-from socket import gaierror
-import uvicorn
+
 from fastapi import FastAPI
 import asyncio
 from pathlib import Path
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+
 
 from bot.core.instance import dp, bot
 from settings import settings, Environment
@@ -93,25 +92,3 @@ async def lifespan(_app: FastAPI):
             logging.info("Бот остановлен")
         except Exception as e:
             logging.error("Ошибка остановки бота: %s", e)
-
-app = FastAPI(lifespan=lifespan)
-
-def run():
-    """
-    Запуск бота с FastAPI.
-    """
-    try:
-        uvicorn.run(
-            app,
-            host="0.0.0.0",
-            port=settings.bot_port
-        )
-    except gaierror as e:
-        logging.critical("Ошибка сетевого адреса: %s", e)
-    except OSError as e:
-        logging.critical("Ошибка операционной системы: %s", e)
-    except KeyboardInterrupt:
-        logging.info("Получен сигнал остановки")
-
-if __name__ == "__main__":
-    run()
