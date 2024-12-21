@@ -16,10 +16,8 @@ RUN apk add --no-cache \
     libpq \
     poppler-utils \
     curl
-
-RUN curl -sSL https://install.python-poetry.org | python3 - \
-    && ln -s /root/.local/bin/poetry /usr/local/bin/poetry \
-    && poetry config virtualenvs.create false
+    
+RUN pip install --no-cache-dir poetry==1.9.1
 
 COPY pyproject.toml poetry.lock ./
 COPY __init__.py ./
