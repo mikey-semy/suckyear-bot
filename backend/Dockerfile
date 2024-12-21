@@ -2,8 +2,10 @@ FROM python:3.12-alpine3.19
 
 WORKDIR /usr/src/app
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple \
+    PIP_TRUSTED_HOST=pypi.tuna.tsinghua.edu.cn
 
 RUN apk add --no-cache --virtual .build-deps \
     gcc \
@@ -16,8 +18,9 @@ RUN apk add --no-cache \
     libpq \
     poppler-utils \
     curl
-
-RUN pip install --no-cache-dir poetry
+    
+RUN pip install --no-cache-dir poetry==1.7.1 \
+    && pip install --no-cache-dir 'urllib3<2.0.0'
 
 COPY pyproject.toml poetry.lock ./
 COPY __init__.py ./
