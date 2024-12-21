@@ -19,8 +19,7 @@ RUN apk add --no-cache \
 
 RUN curl -sSL https://install.python-poetry.org | python3 - \
     && ln -s /root/.local/bin/poetry /usr/local/bin/poetry \
-    && poetry config virtualenvs.create false \
-    && poetry config installer.max-retries 5
+    && poetry config virtualenvs.create false
 
 COPY pyproject.toml poetry.lock ./
 COPY __init__.py ./
