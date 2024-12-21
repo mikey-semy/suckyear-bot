@@ -4,7 +4,6 @@
         "buttons": [
             {
                 "label": "open_webapp",
-                "callback_data": "open_app",
                 "web_app": "https://suckyea.ru"
             },
             {
