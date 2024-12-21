@@ -9,8 +9,9 @@ RUN apk add --no-cache --virtual .build-deps \
     gcc \
     python3-dev \
     musl-dev \
-    postgresql-dev \
-    && apk add --no-cache \
+    postgresql-dev
+    
+RUN apk add --no-cache \
     postgresql-client \
     libpq \
     poppler-utils \
