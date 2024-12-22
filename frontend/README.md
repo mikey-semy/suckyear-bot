@@ -1,50 +1,34 @@
-# React + TypeScript + Vite
+# Фронтенд SuckYearBot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Технологии
+- React 18
+- TypeScript
+- Styled Components
+- Telegram Mini App SDK
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Установка
+```bash
+cd frontend
+yarn install
+yarn dev
 ```
+## Скрипты
+- yarn dev - Запуск dev сервера
+- yarn build - Сборка проекта
+- yarn lint - Проверка кода
+- yarn preview - Предпросмотр сборки
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+## Структура проекта
+```
+frontend/
+    ├── public/           # Публичные файлы (favicon, manifest и т.д.)
+    ├── src/              # Исходный код
+    |   ├── api/          # Api скрипт
+    |   ├── app/          # Главный компонент
+    |   ├── assets/       # Ассеты (картинки, иконки и т.д.)
+    |   ├── components/   # UI компоненты
+    |   ├── contexts/     # React контексты
+    |   ├── pages/        # Страницы приложения
+    |   ├── styles/       # Стили
+    |   └── utils/        # Утилиты
 ```
