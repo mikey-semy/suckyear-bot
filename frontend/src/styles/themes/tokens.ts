@@ -53,7 +53,9 @@ export const tokens = {
     },
     
     sizes: {
-        headerHeight: '60px'
+        headerHeight: '80px',
+        iconButton: '36px',
+        searchHeight: '48px'
     },
     
     spacing: {
@@ -65,6 +67,11 @@ export const tokens = {
     },
 
     typography: {
+
+        fontFamily: {
+            primary: 'Inter, sans-serif',
+            secondary: 'Roboto, sans-serif',
+        },
 
         fontSizes: {
             xs: '12px',
@@ -113,7 +120,7 @@ export const tokens = {
     },
 
     breakpoints: {
-        mobile: '320px',
+        mobile: '430px',
         tablet: '768px',
         desktop: '1024px',
         wide: '1440px'
@@ -124,6 +131,19 @@ export const tokens = {
         modal: 200,
         dropdown: 300
     },
+    opacity: {
+        0: 0,
+        10: 0.1,
+        20: 0.2,
+        30: 0.3,
+        40: 0.4,
+        50: 0.5,
+        60: 0.6,
+        70: 0.7,
+        80: 0.8,
+        90: 0.9,
+        100: 1
+    }
 
     
   } as const

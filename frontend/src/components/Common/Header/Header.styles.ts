@@ -12,14 +12,14 @@ import { t } from '@/styles/helpers';
 export const HeaderContainer = styled.header`
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     gap: ${t.space('xl')};
     height: ${t.size('headerHeight')};
     padding: 0 ${t.space('lg')};
     width: 100%;
     background: ${t.color('secondary')};
-    z-index: 999;
+    z-index: ${t.zIndex('header')};
 `;
 
 

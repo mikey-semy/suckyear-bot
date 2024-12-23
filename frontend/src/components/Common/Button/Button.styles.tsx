@@ -1,44 +1,97 @@
+/**
+ * Стилизованные компоненты для кнопки
+ * 
+ * ButtonContainer - Основной контейнер кнопки
+ * @param {string} variant - Вариант стиля (primary/secondary)
+ * 
+ * ButtonIcon - Контейнер для иконки
+ * 
+ * ButtonTitle - Контейнер для текста
+ * 
+ * Использует дизайн-токены для:
+ * - Отступов (space)
+ * - Цветов (color) 
+ * - Скруглений (radius)
+ * - Теней (shadow)
+ * - Прозрачности (opacity)
+ * - Анимаций (transition)
+ */
 import styled from 'styled-components';
+import { t } from '@/styles/helpers';
 
-export const ButtonContainer = styled.button`
-    cursor: pointer;
-    border: none;
-    background: var(--button-background, transparent);
-    color: var(--button-color);
-    padding: 10px;
+/**
+ * Основной контейнер кнопки
+ * @component
+ * @param {Object} props
+ * @param {'primary' | 'secondary'} props.variant - Определяет цветовую схему кнопки
+ * 
+ * Стили:
+ * - Flexbox контейнер с центрированием
+ * - Отступы и промежутки из токенов
+ * - Цвета фона и текста зависят от варианта
+ * - Анимации при наведении/нажатии
+ * - Состояния hover/active/disabled
+ */
+export const ButtonContainer = styled.button<{ $variant?: 'primary' | 'secondary'}>`
     display: flex;
     align-items: center;
-    gap: 8px;
-    transition: all var(--transition-default);
-    margin-left: 10px;
-    border-radius: var(--border-radius-default, 5px);
-    box-shadow: var(--box-shadow-default);
+    
+    gap: ${t.space('sm')};
+    padding: 10px;
+
+    color: ${({ $variant }) => 
+        $variant === 'primary' ? t.color('primary') : t.color('secondary')};
+    
+    border: none;
+    
+    transition: ${t.transition('normal')};
+    cursor: pointer;
 
     &:hover {
-        background: var(--button-hover-background);
-        color: var(--button-hover-color);
-        opacity: 0.7;
+        opacity: ${t.opacity(90)};
     }
-
+    
     &:active {
-        background: var(--button-active-background);
-        color: var(--button-active-color);
+        
     }
 
     &:disabled {
-        opacity: 0.5;
+        opacity: ${t.opacity(50)};
         cursor: not-allowed;
     }
+
+    
 `;
 
-export const ButtonIcon = styled.span`
+/**
+ * Контейнер для иконки кнопки
+ * @component
+ * 
+ * Стили:
+ * - Flexbox с центрированием
+ * - Наследует цвет от родителя
+ */
+export const ButtonIcon = styled.span<{ $isActive?: boolean }>`
     display: flex;
     align-items: center;
     color: inherit;
+
+    ${({ $isActive }) => $isActive && `
+        color: ${t.color('accent')};
+    `}
 `;
 
+/**
+ * Контейнер для текста кнопки
+ * @component
+ * 
+ * Стили:
+ * - Блочный элемент
+ * - Наследует цвет от родителя
+ * - Плавная анимация изменений
+ */
 export const ButtonTitle = styled.span`
     display: block;
     color: inherit;
-    transition: all 0.3s ease;
+    transition: ${t.transition('normal')};
 `;
