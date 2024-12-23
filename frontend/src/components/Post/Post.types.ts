@@ -1,3 +1,7 @@
+export interface PostTypes {
+    post: PostItem;
+}
+
 export interface PostItem {
     id: string;
     author: string;
