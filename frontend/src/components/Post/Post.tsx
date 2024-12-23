@@ -1,9 +1,10 @@
 import React from 'react';
+import { PostTypes } from './Post.types';
 
-const Post: React.FC = () => {
+const Post: React.FC<PostTypes> = ({post}) => {
     return (
         <div>
-            <h1>Post</h1>
+            <h1>{post}</h1>
         </div>
     );
 }
