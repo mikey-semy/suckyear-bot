@@ -165,9 +165,9 @@ const Posts: React.FC = () => {
             ))}
 
             <Pagination
-                total={total}
-                limit={params.limit}
-                current={params.page}
+                total={total ?? 0} 
+                limit={params.limit ?? 10}
+                current={params.page ?? 1}
                 onChange={handlePage}
             />
         </PostsContainer>
