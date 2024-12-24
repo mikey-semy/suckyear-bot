@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from api.routers.v1 import bot, app, posts, tags, users
+from api.routers.v1 import bot, posts, tags, users
 from settings import settings
 
-__all__ = ["bot", "app", "posts", "tags", "users"]
+__all__ = ["bot", "posts", "tags", "users"]
 
 def all_routers(api_prefix: str = settings.api_prefix) -> APIRouter:
     """
