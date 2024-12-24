@@ -2,18 +2,10 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from shared.database.session import get_async_session
-from shared.schemas.users import TokenSchema, CreateUserSchema
+from shared.schemas.users import TokenSchema, CreateUserSchema, UserSchema
 from shared.services.users import AuthService
 
 router = APIRouter(prefix="/users", tags=["Users"])
-
-@router.post("/telegram/login")
-async def telegram_login(
-    chat_id: int,
-    username: str,
-    auth_service: AuthService = Depends()
-) -> TokenSchema:
-    return await auth_service.login_telegram_user(chat_id, username)
 
 @router.post("")
 async def authenticate(
