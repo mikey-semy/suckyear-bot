@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     
     # Базовые настройки
     app_name: str = Field(default="SuckYearBot")
+    app_version: str = Field(default="0.1.0")
     api_versions: List[str] = ["v1"]
     app_description: str = Field(default="SuckYearBot - бот, определяющий пользователя года")
     
