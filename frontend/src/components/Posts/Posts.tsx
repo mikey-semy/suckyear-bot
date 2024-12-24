@@ -57,7 +57,7 @@ const Posts: React.FC = () => {
         }
         try {
             const data: PostsResponse = await getPosts(params);
-            setEmpty(data.items.length === 0);
+            setEmpty(data.total === 0);
             setPosts(data.items);
             setTotal(data.total);
         } catch (err: any) {

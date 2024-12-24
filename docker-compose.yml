@@ -1,6 +1,17 @@
 version: "3.8"
 
 services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ./.env
+    ports:
+      - "3001:3000"
+    restart: unless-stopped
+    networks:
+      - dokploy-network
   api:
     build: 
       context: ./backend
@@ -13,18 +24,8 @@ services:
     restart: unless-stopped
     networks:
       - dokploy-network
-    
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    env_file:
-      - ./.env
-    ports:
-      - "3001:3000"
-    restart: unless-stopped
-    networks:
-      - dokploy-network
+    depends_on:
+      - frontend
 networks:
   dokploy-network:
     external: true
