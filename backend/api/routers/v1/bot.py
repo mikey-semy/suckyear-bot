@@ -2,7 +2,7 @@ import logging
 from fastapi import APIRouter
 from bot.core.instance import dp, bot
 
-router = APIRouter()
+router = APIRouter(prefix="/bot", tags=["Webhook"])
 
 @router.post("/webhook")
 async def bot_webhook(update: dict) -> dict:
@@ -15,6 +15,5 @@ async def bot_webhook(update: dict) -> dict:
     Returns:
         dict: Результат обработки обновления.
     """
-    logging.info(f"Обновления от бота: {update}")
     await dp.feed_webhook_update(bot, update)
     return {'ok': True}
