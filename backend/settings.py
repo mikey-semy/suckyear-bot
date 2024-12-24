@@ -44,8 +44,10 @@ class Settings(BaseSettings):
     
     # Webhook настройки
     webhook_host: str = Field(default="https://api.suckyea.ru")
-    webhook_url = f"{webhook_host}/api/v1/bot/webhook"
     webhook_port: int = Field(default=8000)
+    @property 
+    def webhook_url(self) -> str:
+        return f"{self.webhook_host}/api/v1/bot/webhook"
     
     # Токен для доступа к API
     auth_url: str = "token"
