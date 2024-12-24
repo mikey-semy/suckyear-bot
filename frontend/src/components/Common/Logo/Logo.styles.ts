@@ -17,7 +17,7 @@ export const LogoContainer = styled.div`
     height: 100%;
     padding-left: 100px;
 
-    @media (max-width: ${t.breakpoints('mobile')}) {
+    @media (max-width: ${t.breakpoints('sm')}) {
         padding-left: 0;
     }
 `;

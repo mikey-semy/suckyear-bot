@@ -8,7 +8,7 @@ export const PostsContainer = styled.div`
     height: 100%;
     min-height: 90vh;
 
-    @media (max-width: ${t.breakpoints('mobile')}) {
+    @media (max-width: ${t.breakpoints('sm')}) {
             margin: 0 20px;
         }
 `;
