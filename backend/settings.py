@@ -33,11 +33,8 @@ class Settings(BaseSettings):
     
     # Базовые настройки
     app_name: str = Field(default="SuckYearBot")
-    app_version: str = Field(default="v1")
+    api_versions: List[str] = ["v1"]
     app_description: str = Field(default="SuckYearBot - бот, определяющий пользователя года")
-    
-    # Префикс для роутеров FastAPI
-    api_prefix: str = f"/api/{ app_version }"
     
     # Токен бота
     bot_token: SecretStr = SecretStr(

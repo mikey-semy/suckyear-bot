@@ -15,7 +15,8 @@ from .commandsworker import set_bot_commands
 
 async def setup_webhook():
     
-    webhook_url = f"{settings.webhook_host}/webhook"
+    webhook_url = f"{settings.webhook_host}/api/v1/bot/webhook"
+    
     logging.info("Webhook приступает к запуску по адресу: %s", webhook_url)
     
     await bot.set_webhook(

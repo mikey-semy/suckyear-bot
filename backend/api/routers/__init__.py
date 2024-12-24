@@ -1,26 +1,27 @@
 from fastapi import APIRouter
-from api.routers.v1 import bot, posts, tags, users
 from settings import settings
 
-__all__ = ["bot", "posts", "tags", "users"]
+from api.routers import v1
+# from api.routers import v2 - когда появится, тогда и раскомментируем
 
-def all_routers(api_prefix: str = settings.api_prefix) -> APIRouter:
+def all_routers() -> APIRouter:
     """
     Возвращает APIRouter, содержащий все роутеры в папке routers для FastAPI.
-    
-    Args:
-        api_prefix (str): Префикс для всех роутеров.
         
     Returns:
         APIRouter: APIRouter, содержащий все роутеры приложения.
     """
-    router = APIRouter()
+    router = version_router = APIRouter()
     
-    for module in __all__:
-        module_router = getattr(globals()[module], "router")
-        if module == "bot":
-            router.include_router(module_router) 
-        else:
-            router.include_router(module_router, prefix=api_prefix)
+    for version in settings.api_versions:
+        if version == "v1":
+            version_router = v1.get_routers()
+        # elif version == "v2":
+        #     version_router = v2.get_routers()
+    
+        router.include_router(
+            router=version_router,
+            prefix=f"/api/{version}"
+        )
     
     return router
