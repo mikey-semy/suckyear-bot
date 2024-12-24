@@ -12,7 +12,7 @@ from os import getenv
 from typing import List
 from enum import Enum
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field, SecretStr, HttpUrl, PostgresDsn
+from pydantic import Field, SecretStr, PostgresDsn
 
 
 class Environment(str, Enum):
@@ -34,28 +34,18 @@ class Settings(BaseSettings):
     # Базовые настройки
     app_name: str = Field(default="SuckYearBot")
     app_version: str = Field(default="0.1.0")
-    api_versions: List[str] = ["v1"]
     app_description: str = Field(default="SuckYearBot - бот, определяющий пользователя года")
+    api_versions: List[str] = ["v1"]
     
     # Токен бота
     bot_token: SecretStr = SecretStr(
         getenv('BOT_TOKEN_DEV' if environment == Environment.DEVELOPMENT else 'BOT_TOKEN')
     )
     
-    internal_api_url: str = "http://localhost:8000"
     # Webhook настройки
     webhook_host: str = Field(default="https://api.suckyea.ru")
+    webhook_url = f"{webhook_host}/api/v1/bot/webhook"
     webhook_port: int = Field(default=8000)
-    bot_port: int = Field(default=8001)
-    # Настройки ретраев
-    webhook_setup_retries: int = 10
-    webhook_retry_delay: int = 5
-
-    # Настройки вебхука
-    webhook_max_connections: int = 40
-    webhook_allowed_updates: list[str] = ["message", "callback_query"]
-    webhook_drop_pending: bool = True
-    webhook_secret_token: SecretStr = bot_token.get_secret_value()
     
     # Токен для доступа к API
     auth_url: str = "token"

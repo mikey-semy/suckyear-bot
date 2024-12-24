@@ -15,17 +15,15 @@ from .commandsworker import set_bot_commands
 
 async def setup_webhook():
     
-    webhook_url = f"{settings.webhook_host}/api/v1/bot/webhook"
-    
-    logging.info("Webhook приступает к запуску по адресу: %s", webhook_url)
+    logging.info("Webhook приступает к запуску по адресу: %s", settings.webhook_url)
     
     await bot.set_webhook(
-        url=webhook_url,
+        url=settings.webhook_url,
         allowed_updates=dp.resolve_used_update_types(),
         drop_pending_updates=True
     )
     
-    logging.info("Webhook запущен: %s", webhook_url)
+    logging.info("Webhook запущен: %s", settings.webhook_url)
 
                     
 @asynccontextmanager
