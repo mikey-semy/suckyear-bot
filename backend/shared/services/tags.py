@@ -64,7 +64,7 @@ class TagService(BaseService):
         return await TagDataManager(self.session).get_tags_by_ids(tag_ids)
 
 
-class TagDataManager(BaseDataManager[TagSchema, Tag]):
+class TagDataManager(BaseDataManager[Tag]):
     """
     Менеджер данных для работы с тегами.
     
