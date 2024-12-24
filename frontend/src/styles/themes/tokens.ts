@@ -62,28 +62,13 @@ export const tokens = {
     
     sizes: {
         headerHeight: '80px',
-        iconButton: '36px',
+        footerHeight: '60px',
+        contentWidth: '1200px',
         searchHeight: '48px',
-        input: '40px',
-        button: {
-            sm: '32px',
-            md: '40px', 
-            lg: '48px',
-            xl: '56px'
-        },
-        avatar: {
-            xs: '24px',
-            sm: '32px',
-            md: '40px',
-            lg: '56px',
-            xl: '80px'
-        },
-        modal: {
-            sm: '400px',
-            md: '600px', 
-            lg: '800px',
-            xl: '1000px'
-        }
+        heightInput: '40px',
+        iconButton: '36px',
+        widthButton: '140px',
+        maxWidthForm: '400px',
     },
     
     spacing: {

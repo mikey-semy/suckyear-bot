@@ -7,6 +7,7 @@ export const PaginationContainer = styled.div`
     gap: ${t.space('sm')};
     justify-content: center;
     margin-top: auto;
+    margin-bottom: ${t.space('md')};
 `;
 
 

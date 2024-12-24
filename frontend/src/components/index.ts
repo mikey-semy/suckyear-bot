@@ -9,5 +9,8 @@ export { default as Loading } from './Common/Loading';
 export { default as Search } from './Common/Search';
 export { default as Sort } from './Common/Sort';
 export { default as Pagination } from './Common/Pagination';
+export { default as Input } from './Common/Input';
+export { default as Select } from './Common/Select';
 export { default as Posts } from './Posts';
 export { default as Post } from './Post';
+

@@ -2,10 +2,10 @@ from datetime import datetime, timezone, timedelta
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
-from shared.schemas.users import UserSchema, CreateUserSchema, TokenSchema
+from shared.schemas.users import UserSchema, CreateUserSchema, UserUpdateSchema, TokenSchema
 from shared.services.base import BaseService, BaseDataManager
 from shared.models.users import User
 from shared.exceptions.users import (
@@ -251,7 +251,6 @@ class AuthDataManager(BaseDataManager[UserSchema]):
         statement = select(self.model).where(self.model.chat_id == chat_id) 
         return await self.get_one(statement)
 
-
 async def get_current_user(token: str = Depends(oauth2_schema)) -> UserSchema | None:
     """
     Получает данные текущего пользователя.
@@ -294,7 +293,6 @@ async def get_current_user(token: str = Depends(oauth2_schema)) -> UserSchema | 
     except JWTError as exc:
         raise AuthenticationError() from exc
 
-
 def is_expired(expires_at: str) -> bool:
     """
     Проверяет, истек ли срок действия токена.
@@ -306,3 +304,73 @@ def is_expired(expires_at: str) -> bool:
              True, если токен истек, иначе False.
     """
     return datetime.strptime(expires_at, "%Y-%m-%d %H:%M:%S") < datetime.now(timezone.utc)
+
+class UserService(BaseService):
+    """
+    Сервис для работы с пользователями.
+    """
+    async def get_profile(self, user: UserSchema) -> UserSchema:
+        """
+        Получает профиль пользователя.
+        """
+        return await UserDataManager(self.session).get_profile(user.id)
+    
+    async def update_profile(self, user: UserSchema, data: UserUpdateSchema) -> UserSchema:
+        """
+        Обновляет профиль пользователя.
+        """
+        return await UserDataManager(self.session).update_profile(user, data)
+
+class UserDataManager(BaseDataManager[UserSchema]):
+    """
+    Класс для работы с данными пользователей в базе данных.
+    """
+    def __init__(self, session: AsyncSession):
+            super().__init__(
+                session=session,
+                schema=UserSchema,
+                model=User
+            )
+    
+    async def get_profile(self, user_id: int) -> UserSchema:
+        """
+        Получает профиль пользователя.
+        
+        Args:
+            user_id: ID пользователя.
+
+        Returns:
+            Профиль пользователя.
+        """
+        statement = select(self.model).where(self.model.id == user_id)
+        return await self.get_one(statement)
+    
+    
+    async def update_profile(self, user: UserSchema, data: UserUpdateSchema) -> UserSchema:
+        """
+        Обновляет профиль пользователя.
+        
+        Args:
+            user: Пользователь, профиль которого нужно обновить.
+            data: Данные для обновления профиля.
+        
+        Returns:
+            Обновленный профиль пользователя.
+        """
+        update_data = data.model_dump(exclude_none=True)
+
+        # if data.email:
+        #     existing = await self.get_by_email(data.email)
+        #     if existing and existing.id != user.id:
+        #         raise ValueError("Email already taken")
+        
+        if data.password:
+            update_data["hashed_password"] = AuthService.bcrypt(data.password)
+            del update_data["password"]
+            
+        statement = update(self.model).where(
+            self.model.id == user.id).values(**update_data)
+        
+        await self.update_one(statement)
+        
+        return await self.get_profile(user.id)

@@ -1,9 +1,29 @@
+"""
+Модуль для работы с постами через REST API.
+
+Этот модуль предоставляет эндпоинты для выполнения CRUD операций с постами:
+создание, чтение, обновление и удаление. Поддерживает пагинацию, поиск,
+фильтрацию по статусу и тегам.
+
+Роуты:
+- POST /posts/ - Создание нового поста
+- GET /posts/ - Получение списка постов с фильтрацией
+- GET /posts/{id} - Получение поста по ID  
+- PUT /posts/{id}/status - Обновление статуса поста
+
+Зависимости:
+- FastAPI для создания API эндпоинтов
+- SQLAlchemy для работы с БД
+- PostService для бизнес-логики
+"""
 from typing import List
 from fastapi import APIRouter, Depends, Query
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 from shared.database.session import get_async_session
+from shared.services.users import get_current_user
+from shared.schemas.users import UserSchema
 from shared.schemas.base import Page, PaginationParams
 from shared.schemas.posts import PostSchema, PostCreateSchema, PostStatus
 from shared.services.posts import PostService
@@ -14,7 +34,7 @@ router = APIRouter(prefix="/posts", tags=["Posts"])
 @router.post("/", response_model=PostSchema)
 async def create_post(
     post: PostCreateSchema,
-    user_id: int,
+    user: UserSchema = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session)
 ) -> PostSchema:
     """
@@ -22,7 +42,7 @@ async def create_post(
     
     Args:
         post (PostCreateSchema): Данные нового поста.
-        user_id (int): ID пользователя, создавшего пост.
+        _user (UserSchema): Текущий пользователь.
         session (AsyncSession): Асинхронная сессия базы данных.
 
     Returns:
@@ -32,7 +52,7 @@ async def create_post(
         HTTPException: Если не удалось создать пост.
     """
     try:
-        return PostService(session).create_post(post, user_id)
+        return PostService(session).create_post(post, user.id)
     except SQLAlchemyError as e:
         raise PostCreateError(str(e)) from e
 

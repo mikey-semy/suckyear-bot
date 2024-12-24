@@ -1,10 +1,13 @@
 import React from 'react';
-import { FooterContainer } from './Footer.styles';
+import { FooterContainer, FooterWrapper } from './Footer.styles';
 
 const Footer: React.FC = () => {
   return (
-    <FooterContainer>
-    </FooterContainer>
+    <FooterWrapper>
+      <FooterContainer>
+
+      </FooterContainer>
+    </FooterWrapper>
   );
 };
 

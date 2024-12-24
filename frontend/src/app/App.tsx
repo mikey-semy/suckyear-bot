@@ -5,7 +5,7 @@
 import React from 'react';
 import { Outlet } from "react-router-dom";
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
-import { ThemeProvider, useTheme } from '@/contexts';
+import { ThemeProvider, useTheme, AuthProvider } from '@/contexts';
 import { Header, Footer, Content } from '@/components';
 import { GlobalStyles, ResetStyles, Variables, LightTheme, DarkTheme } from '@/styles';
 import { AppContainer, MainContainer } from './App.styles';
@@ -46,9 +46,11 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   
   return (
-    <ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
         <AppContent />
-    </ThemeProvider>
+      </ThemeProvider>
+    </AuthProvider>
   );
 };
 export default App;

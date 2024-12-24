@@ -15,11 +15,6 @@ export const LogoContainer = styled.div`
     justify-content: center;
     align-items: center;
     height: 100%;
-    padding-left: 100px;
-
-    @media (max-width: ${t.breakpoints('sm')}) {
-        padding-left: 0;
-    }
 `;
 
 /**

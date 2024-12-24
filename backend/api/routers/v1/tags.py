@@ -1,3 +1,20 @@
+"""
+Модуль для работы с тегами через REST API.
+
+Этот модуль предоставляет эндпоинты для управления тегами постов:
+создание тегов, получение тегов поста, привязка тегов к постам.
+
+Роуты:
+- POST /tags/ - Создание новых тегов
+- GET /tags/{post_id}/tags - Получение тегов поста
+- POST /tags/post-tags - Привязка тегов к посту
+
+Зависимости:
+- FastAPI для API эндпоинтов
+- SQLAlchemy для работы с БД 
+- TagService для бизнес-логики тегов
+"""
+
 from typing import List, Dict
 from fastapi import APIRouter, Depends
 from fastapi import HTTPException

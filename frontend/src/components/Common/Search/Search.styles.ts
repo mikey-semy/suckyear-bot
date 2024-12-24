@@ -29,7 +29,7 @@ export const SearchInput = styled.input`
     color: ${t.color('primary')};
     background: transparent;
     border: none;
-    border-bottom: 2px solid ${t.color('gray200')};
+    border-bottom: 1px solid ${t.color('gray200')};
     transition: ${t.transition('normal')};
     padding: ${t.space('md')} ${t.space('xl')};
     &:focus {

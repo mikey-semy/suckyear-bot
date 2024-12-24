@@ -1,7 +1,8 @@
 export { 
     GlobalStyles, 
     ResetStyles, 
-    Variables 
+    Variables, 
+    Container
 } from './base';
 
 export { 

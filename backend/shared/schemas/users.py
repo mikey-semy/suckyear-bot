@@ -43,6 +43,21 @@ class CreateUserSchema(BaseSchema):
     email: str | None = None
     password: str | None = None
 
+class UserUpdateSchema(BaseSchema):
+    """
+    Схема для обновления данных пользователя.
+
+    Этот класс используется для валидации и сериализации данных,
+    связанных с обновлением данных пользователя.
+    Args:
+        username (str): Имя пользователя.
+        email (str): Электронная почта пользователя.
+        password (str): Пароль пользователя.
+        """
+    username: str | None = None
+    email: str | None = None
+    password: str | None = None
+
 class UserSchema(BaseSchema):
     """
     Схема для представления данных пользователя.

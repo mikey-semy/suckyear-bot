@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { styled, createGlobalStyle } from 'styled-components';
 import { t } from '@/styles/helpers';
 
 export const Global = createGlobalStyle`
@@ -13,3 +13,10 @@ export const Global = createGlobalStyle`
     }
 `;
 export default Global;
+
+export const Container = styled.div`
+  width: 100%;
+  max-width: ${t.size('contentWidth')};
+  margin: 0 auto;
+  padding: 0 ${t.space('md')};
+`;
