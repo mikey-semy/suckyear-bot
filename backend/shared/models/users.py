@@ -33,6 +33,8 @@ class User(SQLModel):
         chat_id (int): Уникальный идентификатор чата пользователя.
         username (str): Имя пользователя.
         posts (List[Post]): Список постовых историй, связанных с пользователем.
+        role (UserRole): Роль пользователя в системе.
+        hashed_password (str): Хэшированный пароль пользователя.
     """
     chat_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=True)
     username: Mapped[str] = mapped_column(String(100))

@@ -16,7 +16,7 @@ def all_routers() -> APIRouter:
     for version in settings.api_versions:
         if version == "v1":
             version_router = v1.get_routers()
-        # if version == "v2":
+        # elif version == "v2":
         #     version_router = v2.get_routers()
     
         router.include_router(
